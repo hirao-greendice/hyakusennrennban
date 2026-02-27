@@ -22,6 +22,7 @@
         }
 
         body {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,14 +45,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10vh 5vh 2vh;
+            padding: 5vh 4vw 2vh;
             box-sizing: border-box;
         }
 
         .container-wrapper {
             position: relative;
-            width: 90%;
-            max-width: 600px;
+            width: min(88vw, 60vh, 620px);
             aspect-ratio: 1;
             display: flex;
             justify-content: center;
@@ -60,10 +60,10 @@
 
         .container-wrapper > img {
             position: absolute;
-            top: -30px;
+            top: -24px;
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
+            width: 28px;
             height: auto;
             z-index: 10;
         }
@@ -103,7 +103,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px 0 20px;
+            padding: 8px 0 14px;
         }
 
         .question-text {
@@ -112,7 +112,7 @@
             width: 100%;
             text-align: center;
             color: #FEFDFD;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .question-text p {
@@ -120,13 +120,13 @@
         }
 
         .question-text p:first-child {
-            font-size: 2rem;
+            font-size: clamp(1.55rem, 2.9vw, 2.1rem);
             font-weight: 600;
         }
 
         .question-text p:last-child {
             margin-bottom: 0;
-            font-size: 1.25rem;
+            font-size: clamp(1.05rem, 2.2vw, 1.3rem);
             font-weight: 600;
         }
 
@@ -137,7 +137,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-bottom: 24px;
+            margin-bottom: 18px;
         }
 
         .answer-input {
@@ -189,7 +189,7 @@
 
         @media (max-width: 768px) {
             .container-wrapper {
-                width: 95%;
+                width: min(94vw, 56vh, 560px);
             }
         }
 
