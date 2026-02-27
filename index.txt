@@ -1,0 +1,521 @@
+﻿<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SO-LE</title>
+    <style>
+        /* Base Styles
+        -------------------------------------------------- */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            font-family: Arial, sans-serif;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Layout Structure
+        -------------------------------------------------- */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #839BAA;
+        }
+
+        .background-color {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* Main Record Section
+        -------------------------------------------------- */
+        .main-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10vh 5vh 1vh 5vh;
+            box-sizing: border-box;
+
+        }
+
+        .container-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Triangle Image */
+        .container-wrapper > img {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: auto;
+            z-index: 10;
+        }
+
+        /* Record Container */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Record Images */
+        .background-image,
+        .acid-image,
+        .rotating-image {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .background-image,
+        .acid-image {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .rotating-image {
+            width: 40%;
+            height: 40%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .background-image img,
+        .rotating-image img,
+        .acid-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Control Section
+        -------------------------------------------------- */
+        .control-section {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .play-pause-button {
+            width: 60px;
+            height: 60px;
+            background: rgba(254, 253, 253, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Timer Section
+        -------------------------------------------------- */
+        .timer-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .timer {
+            font-family: 'Monaco', monospace;
+            font-size: 2.5em;
+            color: #FEFDFD;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Content Section
+        -------------------------------------------------- */
+        .content-section {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Question Text */
+        .question-text {
+            width: 100%;
+            text-align: center;
+
+        }
+
+        .question-text p {
+            color: #FEFDFD;
+            margin: 0 0 10px 0;
+            padding: 0;
+        }
+
+        .question-text p:first-child {
+            font-size: 3em;
+            font-weight: 600;
+        }
+
+        .question-text p:last-child {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        /* Answer Container */
+        .answer-container {
+            width: 70%;
+            max-width: 600px;
+            background: rgba(254, 253, 253, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Form Elements */
+        .answer-input {
+            width: 100%;
+
+            padding: 15px;
+            border: 2px solid #4A5568;
+            border-radius: 8px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+
+        }
+
+        /* Responsive Design
+        -------------------------------------------------- */
+        @media (max-width: 768px) {
+            .container-wrapper {
+                width: 95%;
+            }
+            
+            .content-section {
+                width: 95%;
+                padding: 10px;
+            }
+            
+            .question-text p:first-child {
+                font-size: 2.5em;
+            }
+            
+            .question-text p:last-child {
+                font-size: 1.2em;
+            }
+            
+            .timer {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .question-text p:first-child {
+                font-size: 2em;
+            }
+            
+            .question-text p:last-child {
+                font-size: 1em;
+            }
+            
+            .timer {
+                font-size: 1.5em;
+            }
+            
+            .play-pause-button {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="background-color"></div>
+    <div class="main-section">
+
+        <div class="container-wrapper">
+            <img src="./assets/img/triangle.png" alt="triangle">
+            <div class="container">
+                <div class="background-image">
+                    <img src="./assets/img/SOLE-back.png" alt="Background">
+                </div>
+                <div class="acid-image" >
+                    <img src="./assets/img/SOLE-acid.png" alt="Acid Layer">
+                </div>
+                <div class="rotating-image">
+                    <img src="./assets/img/SOLE.png" alt="SOLE">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="content-section">
+            <!-- 蝠城｡梧枚繧定｡ｨ遉ｺ -->
+        <div class="question-text">
+            <p>What is the center of the record pointing to?</p>
+            <p>繝ｬ繧ｳ繝ｼ繝峨・荳ｭ蠢・・菴輔ｒ陦ｨ縺呻ｼ・/p>
+        </div>
+
+        <div class="control-section">
+            <button class="play-pause-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+        </div>
+    
+    
+        <div class="timer-container">
+            <div class="timer">00:00</div>
+        </div>
+    
+
+
+
+        <div class="answer-container">
+            <input type="text" class="answer-input" placeholder="Please enter your answer">
+            <button class="submit-button">CHECK</button>
+        </div>
+
+    </div>
+
+
+    <audio id="bgMusic" src="./assets/audio/himorogi wanderer.mp3" preload="auto"></audio>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rotatingElements = [
+            document.querySelector('.rotating-image'),
+            document.querySelector('.acid-image')
+        ];
+        const audio = document.getElementById('bgMusic');
+        const playPauseButton = document.querySelector('.play-pause-button');
+        const playPauseIcon = playPauseButton.querySelector('svg');
+        const timerDisplay = document.querySelector('.timer');
+
+        let isPlaying = false;
+        let rotationCount = 0;
+        const DEFAULT_COLOR = '#839BAA';
+        const angleColorMaps = [
+            [53, 70, ['#002776', '#009739', '#FFFFFF', '#FEDF00']],
+            [70, 75, ['#FFD100', '#003893', '#CE1126']],
+            [75, 81, ['#FFD100', '#F4C430', '#8B4513', '#CE1126', '#009739', '#003893', '#00BFFF', '#FFFFFF', '#808080']],
+            [91, 93, ['#FFD100', '#F4C430', '#8B4513', '#CE1126', '#009739', '#003893', '#00BFFF', '#FFFFFF', '#808080']],
+            [157, 159, ['#FFFFFF', '#FFD700', '#FF0000', '#0033A0', '#000000']],
+            [160, 162, ['#FFFFFF', '#B22234', '#3C3B6E']],
+            [230, 231, ['#FFFFFF', '#FF0000']],
+            [240, 241, ['#FFFFFF', '#FF0000']],
+            [243, 252, ['#FFFFFF', '#FF0000']],
+            [246, 263, ['#FFFFFF', '#FF0000']],
+            [287, 289, ['#FFFFFF', '#007E3A', '#D21034']],
+            [316, 319, ['#FFFFFF', '#4189DD']],
+            [319, 326, ['#FFFFFF', '#006600', '#FF0000', '#000000']],
+            [326, 330, ['#FFFFFF', '#FFCD00', '#FF0000', '#000000']],
+            [330, 342, ['#FFD100', '#007FFF', '#CE1126']],
+            [342, 346, ['#FFD100', '#009543', '#DC241F']],
+            [346, 351, ['#FFD100', '#009739', '#3A75C4']],
+            [354, 356, ['#FFD100', '#12AD2B', '#FF0000', '#000000', '#FFFFFF']]
+        ];
+
+        function getCurrentColors(angle) {
+            const normalizedAngle = angle % 360;
+            const colorSet = angleColorMaps.find(([start, end]) =>
+                normalizedAngle >= start && normalizedAngle <= end
+            );
+            return colorSet ? colorSet[2] : [DEFAULT_COLOR];
+        }
+
+        function updateBackgroundColor(rotation) {
+            const normalizedRotation = rotation % 360;
+            const colors = getCurrentColors(normalizedRotation);
+            const backgroundElement = document.querySelector('.background-color');
+
+            if (colors.length === 1) {
+                backgroundElement.style.backgroundImage = 'none';
+                backgroundElement.style.backgroundColor = colors[0];
+            } else {
+                const gradientStops = colors.map((color, index, array) => {
+                    const position = (index * 100) / (array.length - 1);
+                    return `${color} ${position}%`;
+                }).join(', ');
+                backgroundElement.style.backgroundColor = 'transparent';
+                backgroundElement.style.backgroundImage = `linear-gradient(90deg, ${gradientStops})`;
+            }
+        }
+
+        function updatePlayPauseIcon(currentlyPlaying) {
+            playPauseIcon.innerHTML = currentlyPlaying
+                ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'
+                : '<path d="M8 5v14l11-7z"/>';
+        }
+
+        function formatTime(hours, minutes) {
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimer(currentTime, duration) {
+            if (!duration) {
+                timerDisplay.textContent = '00:00';
+                return;
+            }
+
+            const totalMinutes = Math.floor((currentTime / duration) * 24 * 60);
+            const hours = Math.floor(totalMinutes / 60) % 24;
+            const minutes = Math.floor(totalMinutes % 60);
+            timerDisplay.textContent = formatTime(hours, minutes);
+        }
+
+        function updateRotation() {
+            if (isPlaying && audio.duration) {
+                const baseRotation = (audio.currentTime / audio.duration) * 360;
+                const totalRotation = baseRotation + (rotationCount * 360);
+
+                rotatingElements.forEach(element => {
+                    if (element) {
+                        if (element.classList.contains('rotating-image')) {
+                            element.style.transform = `translate(-50%, -50%) rotate(${totalRotation}deg)`;
+                        } else if (element.classList.contains('acid-image')) {
+                            element.style.transform = `rotate(${totalRotation}deg)`;
+                        }
+                    }
+                });
+
+                updateBackgroundColor(totalRotation);
+                updateTimer(audio.currentTime, audio.duration);
+                requestAnimationFrame(updateRotation);
+            }
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            updatePlayPauseIcon(isPlaying);
+
+            if (isPlaying) {
+                audio.play().then(() => {
+                    requestAnimationFrame(updateRotation);
+                }).catch(error => {
+                    console.error('Playback failed:', error);
+                    isPlaying = false;
+                    updatePlayPauseIcon(isPlaying);
+                });
+            } else {
+                audio.pause();
+            }
+        }
+
+        audio.addEventListener('loadedmetadata', function() {
+            updateTimer(0, audio.duration);
+        });
+
+        audio.addEventListener('ended', function() {
+            rotationCount++;
+            audio.currentTime = 0;
+            updateTimer(0, audio.duration);
+            audio.play();
+        });
+
+        playPauseButton.addEventListener('click', togglePlayPause);
+
+        const submitButton = document.querySelector('.submit-button');
+        const answerInput = document.querySelector('.answer-input');
+
+        function normalizeAnswer(input) {
+            return input
+                .normalize('NFKC')
+                .trim()
+                .toLowerCase()
+                .replace(/[^\p{L}\p{N}]/gu, '');
+        }
+
+        const validAnswers = new Set([
+            '南極点',
+            '南極',
+            'なんきょくてん',
+            'なんきょく',
+            'サウスポール',
+            'さうすぽーる',
+            'southpole',
+            'thesouthpole',
+            'nankyokuten'
+        ]);
+
+        submitButton.addEventListener('click', () => {
+            const answer = normalizeAnswer(answerInput.value);
+            const isCorrect = validAnswers.has(answer) || answer.includes('southpole') || answer.includes('南極');
+
+            if (isCorrect) {
+                alert('That\'s correct!');
+            } else {
+                alert('Not correct. Try again!');
+            }
+        });
+
+        document.querySelectorAll('img').forEach(img => {
+            img.onerror = () => console.error('Image failed to load:', img.src);
+        });
+
+        audio.onerror = () => console.error('Audio failed to load');
+    });
+</script>
+</body>
+</html>
+
+

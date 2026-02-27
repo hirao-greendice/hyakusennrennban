@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SO-LE</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+            background: #839BAA;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .background-color {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .main-section {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10vh 5vh 2vh;
+            box-sizing: border-box;
+        }
+
+        .container-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container-wrapper > img {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: auto;
+            z-index: 10;
+        }
+
+        .record-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .record-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40%;
+            height: 40%;
+            object-fit: contain;
+            transform: translate(-50%, -50%) rotate(0deg);
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .control-section {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0 20px;
+        }
+
+        .question-text {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            text-align: center;
+            color: #FEFDFD;
+            margin-bottom: 20px;
+        }
+
+        .question-text p {
+            margin: 0 0 8px 0;
+        }
+
+        .question-text p:first-child {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .question-text p:last-child {
+            margin-bottom: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .answer-container {
+            position: relative;
+            z-index: 1;
+            width: min(80%, 520px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .answer-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .answer-submit {
+            width: 100%;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #1f2937;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .answer-feedback {
+            min-height: 1.4em;
+            margin: 0;
+            text-align: center;
+            color: #FEFDFD;
+            font-weight: 600;
+        }
+
+        .play-pause-button {
+            width: 60px;
+            height: 60px;
+            background: rgba(254, 253, 253, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #1f2937;
+        }
+
+        .play-pause-button svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        @media (max-width: 768px) {
+            .container-wrapper {
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .play-pause-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .play-pause-button svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-color"></div>
+
+    <div class="main-section">
+        <div class="container-wrapper">
+            <img src="./assets/img/triangle.png" alt="triangle">
+            <div class="record-container">
+                <img class="record-image" src="./assets/img/recode.png" alt="record">
+                <img class="logo-image" src="./assets/img/logo.png" alt="logo">
+            </div>
+        </div>
+    </div>
+
+    <div class="control-section">
+        <button class="play-pause-button" type="button" aria-label="Play or pause">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="question-text">
+        <p>What is the center of the record pointing to?</p>
+        <p>レコードの中心は何を表す？</p>
+    </div>
+
+    <div class="answer-container">
+        <input class="answer-input" type="text" placeholder="Please enter your answer">
+        <button class="answer-submit" type="button">CHECK</button>
+        <p class="answer-feedback" aria-live="polite"></p>
+    </div>
+
+    <audio id="bgMusic" src="./assets/audio/music.mp3" preload="auto" loop></audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const logoImage = document.querySelector(".logo-image");
+            const backgroundElement = document.querySelector(".background-color");
+            const audio = document.getElementById("bgMusic");
+            const playPauseButton = document.querySelector(".play-pause-button");
+            const playPauseIcon = playPauseButton.querySelector("svg");
+            const answerInput = document.querySelector(".answer-input");
+            const answerSubmit = document.querySelector(".answer-submit");
+            const answerFeedback = document.querySelector(".answer-feedback");
+
+            let isPlaying = false;
+            let loopCount = 0;
+            let lastCurrentTime = 0;
+            let animationId = 0;
+            const DEFAULT_COLOR = "#839BAA";
+            // Rule: sort each palette by hex code (ascending) for consistent ordering.
+            const angleColorMaps = [
+                [53, 70, ["#002776", "#009739", "#FEDF00", "#FFFFFF"]],
+                [70, 75, ["#003893", "#CE1126", "#FFD100"]],
+                [75, 81, ["#003893", "#009739", "#00BFFF", "#808080", "#8B4513", "#CE1126", "#F4C430", "#FFD100", "#FFFFFF"]],
+                [91, 93, ["#003893", "#009739", "#00BFFF", "#808080", "#8B4513", "#CE1126", "#F4C430", "#FFD100", "#FFFFFF"]],
+                [157, 159, ["#000000", "#0033A0", "#FF0000", "#FFD700", "#FFFFFF"]],
+                [160, 162, ["#3C3B6E", "#B22234", "#FFFFFF"]],
+                [230, 231, ["#FF0000", "#FFFFFF"]],
+                [240, 241, ["#FF0000", "#FFFFFF"]],
+                [243, 252, ["#FF0000", "#FFFFFF"]],
+                [246, 263, ["#FF0000", "#FFFFFF"]],
+                [287, 289, ["#007E3A", "#D21034", "#FFFFFF"]],
+                [316, 319, ["#4189DD", "#FFFFFF"]],
+                [319, 326, ["#000000", "#006600", "#FF0000", "#FFFFFF"]],
+                [326, 330, ["#000000", "#FF0000", "#FFCD00", "#FFFFFF"]],
+                [330, 342, ["#007FFF", "#CE1126", "#FFD100"]],
+                [342, 346, ["#009543", "#DC241F", "#FFD100"]],
+                [346, 351, ["#009739", "#3A75C4", "#FFD100"]],
+                [354, 356, ["#000000", "#12AD2B", "#FF0000", "#FFD100", "#FFFFFF"]]
+            ];
+
+            function getCurrentColors(angle) {
+                const normalizedAngle = ((angle % 360) + 360) % 360;
+                const colorSet = angleColorMaps.find(function (range) {
+                    return normalizedAngle >= range[0] && normalizedAngle <= range[1];
+                });
+                return colorSet ? colorSet[2] : [DEFAULT_COLOR];
+            }
+
+            function updateBackgroundColor(rotation) {
+                const colors = getCurrentColors(rotation);
+
+                if (colors.length === 1) {
+                    backgroundElement.style.backgroundImage = "none";
+                    backgroundElement.style.backgroundColor = colors[0];
+                    return;
+                }
+
+                const gradientStops = colors.map(function (color, index, array) {
+                    const position = (index * 100) / (array.length - 1);
+                    return color + " " + position + "%";
+                }).join(", ");
+
+                backgroundElement.style.backgroundColor = "transparent";
+                backgroundElement.style.backgroundImage = "linear-gradient(90deg, " + gradientStops + ")";
+            }
+
+            function updatePlayPauseIcon(currentlyPlaying) {
+                playPauseIcon.innerHTML = currentlyPlaying
+                    ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"></path>'
+                    : '<path d="M8 5v14l11-7z"></path>';
+            }
+
+            function normalizeAnswer(input) {
+                return input
+                    .normalize("NFKC")
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[^\p{L}\p{N}]/gu, "");
+            }
+
+            const validAnswers = new Set([
+                "南極点",
+                "南極",
+                "なんきょくてん",
+                "なんきょく",
+                "ナンキョクテン",
+                "ナンキョク",
+                "サウスポール",
+                "さうすぽーる",
+                "southpole",
+                "thesouthpole",
+                "nankyokuten",
+                "nankyoku"
+            ].map(normalizeAnswer));
+
+            function checkAnswer() {
+                const answer = normalizeAnswer(answerInput.value);
+                const isCorrect =
+                    validAnswers.has(answer) ||
+                    answer.includes("南極") ||
+                    answer.includes("なんきょく") ||
+                    answer.includes("southpole") ||
+                    answer.includes("nankyoku");
+
+                if (isCorrect) {
+                    answerFeedback.textContent = "Correct!";
+                    return;
+                }
+
+                answerFeedback.textContent = "Not correct. Try again!";
+            }
+
+            function updateLogoRotation() {
+                if (!isPlaying) {
+                    return;
+                }
+
+                const duration = audio.duration;
+                const currentTime = audio.currentTime;
+
+                if (duration && Number.isFinite(duration)) {
+                    if (currentTime + 0.05 < lastCurrentTime) {
+                        loopCount += 1;
+                    }
+
+                    lastCurrentTime = currentTime;
+
+                    const totalRotation = (loopCount + currentTime / duration) * 360;
+                    logoImage.style.transform = "translate(-50%, -50%) rotate(" + totalRotation + "deg)";
+                    updateBackgroundColor(totalRotation);
+                }
+
+                animationId = requestAnimationFrame(updateLogoRotation);
+            }
+
+            async function togglePlayPause() {
+                if (!isPlaying) {
+                    try {
+                        await audio.play();
+                        isPlaying = true;
+                        updatePlayPauseIcon(true);
+
+                        if (!animationId) {
+                            animationId = requestAnimationFrame(updateLogoRotation);
+                        }
+                    } catch (error) {
+                        console.error("Playback failed:", error);
+                    }
+                    return;
+                }
+
+                isPlaying = false;
+                audio.pause();
+                updatePlayPauseIcon(false);
+                cancelAnimationFrame(animationId);
+                animationId = 0;
+            }
+
+            playPauseButton.addEventListener("click", togglePlayPause);
+            answerSubmit.addEventListener("click", checkAnswer);
+            answerInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+            });
+
+            audio.addEventListener("loadedmetadata", function () {
+                loopCount = 0;
+                lastCurrentTime = 0;
+                logoImage.style.transform = "translate(-50%, -50%) rotate(0deg)";
+                updateBackgroundColor(0);
+            });
+
+            audio.onerror = function () {
+                console.error("Audio failed to load:", audio.currentSrc);
+            };
+
+            updateBackgroundColor(0);
+        });
+    </script>
+</body>
+</html>
+
