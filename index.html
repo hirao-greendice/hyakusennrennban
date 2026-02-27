@@ -140,8 +140,14 @@
             margin-bottom: 18px;
         }
 
+        .answer-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .answer-input {
-            width: 100%;
+            flex: 1;
             box-sizing: border-box;
             padding: 12px 14px;
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -150,7 +156,7 @@
         }
 
         .answer-submit {
-            width: 100%;
+            width: 108px;
             padding: 12px 14px;
             border: none;
             border-radius: 8px;
@@ -203,6 +209,10 @@
                 width: 24px;
                 height: 24px;
             }
+
+            .answer-submit {
+                width: 96px;
+            }
         }
     </style>
 </head>
@@ -233,8 +243,10 @@
     </div>
 
     <div class="answer-container">
-        <input class="answer-input" type="text" placeholder="Please enter your answer">
-        <button class="answer-submit" type="button">CHECK</button>
+        <div class="answer-row">
+            <input class="answer-input" type="text" placeholder="Please enter your answer">
+            <button class="answer-submit" type="button">CHECK</button>
+        </div>
         <p class="answer-feedback" aria-live="polite"></p>
     </div>
 
