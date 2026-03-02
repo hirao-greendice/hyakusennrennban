@@ -268,14 +268,15 @@
             let lastCurrentTime = 0;
             let animationId = 0;
             const DEFAULT_COLOR = "#006688";
+            const GRADIENT_BLEND_RATIO = 1;
             // Rule: sort each palette by hex code (ascending) for consistent ordering.
             const angleColorMaps = [
-                [53, 70, ["#002776", "#009739", "#FEDF00", "#FFFFFF"]],
+                [49, 70, ["#002776", "#009739", "#FEDF00", "#FFFFFF"]],
                 [70, 75, ["#003893", "#CE1126", "#FFD100"]],
-                [75, 81, ["#003893", "#009739", "#00BFFF", "#808080", "#8B4513", "#CE1126", "#F4C430", "#FFD100", "#FFFFFF"]],
-                [91, 93, ["#003893", "#009739", "#00BFFF", "#808080", "#8B4513", "#CE1126", "#F4C430", "#FFD100", "#FFFFFF"]],
-                [157, 159, ["#000000", "#0033A0", "#FF0000", "#FFD700", "#FFFFFF"]],
-                [160, 162, ["#3C3B6E", "#B22234", "#FFFFFF"]],
+                [75, 80, ["#003893", "#009739", "#00BFFF", "#808080", "#8B4513", "#CE1126", "#F4C430", "#FFD100", "#FFFFFF"]],
+                [91, 92, ["#003893", "#009739", "#00BFFF", "#808080", "#8B4513", "#CE1126", "#F4C430", "#FFD100", "#FFFFFF"]],
+                // [157, 159, ["#000000", "#0033A0", "#FF0000", "#FFD700", "#FFFFFF"]],
+                // [160, 162, ["#3C3B6E", "#B22234", "#FFFFFF"]],
                 [230, 231, ["#FF0000", "#FFFFFF"]],
                 [240, 241, ["#FF0000", "#FFFFFF"]],
                 [243, 252, ["#FF0000", "#FFFFFF"]],
@@ -287,7 +288,7 @@
                 [330, 342, ["#007FFF", "#CE1126", "#FFD100"]],
                 [342, 346, ["#009543", "#DC241F", "#FFD100"]],
                 [346, 351, ["#009739", "#3A75C4", "#FFD100"]],
-                [354, 356, ["#000000", "#12AD2B", "#FF0000", "#FFD100", "#FFFFFF"]]
+                [353, 354, ["#000000", "#12AD2B", "#FF0000", "#FFD100", "#FFFFFF"]]
             ];
 
             function getCurrentColors(angle) {
@@ -307,13 +308,25 @@
                     return;
                 }
 
-                const gradientStops = colors.map(function (color, index, array) {
-                    const position = (index * 100) / (array.length - 1);
-                    return color + " " + position + "%";
-                }).join(", ");
+                const segmentSize = 100 / (colors.length - 1);
+                const blendRatio = Math.max(0, Math.min(GRADIENT_BLEND_RATIO, 1));
+                const transitionWidth = segmentSize * blendRatio;
+                const halfTransition = transitionWidth / 2;
+                const gradientStops = [colors[0] + " 0%"];
+
+                for (let index = 0; index < colors.length - 1; index += 1) {
+                    const start = index * segmentSize;
+                    const end = (index + 1) * segmentSize;
+                    const midpoint = (start + end) / 2;
+
+                    gradientStops.push(colors[index] + " " + (midpoint - halfTransition) + "%");
+                    gradientStops.push(colors[index + 1] + " " + (midpoint + halfTransition) + "%");
+                }
+
+                gradientStops.push(colors[colors.length - 1] + " 100%");
 
                 backgroundElement.style.backgroundColor = "transparent";
-                backgroundElement.style.backgroundImage = "linear-gradient(90deg, " + gradientStops + ")";
+                backgroundElement.style.backgroundImage = "linear-gradient(90deg, " + gradientStops.join(", ") + ")";
             }
 
             function updatePlayPauseIcon(currentlyPlaying) {
@@ -432,4 +445,3 @@
     </script>
 </body>
 </html>
-
