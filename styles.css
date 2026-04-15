@@ -449,9 +449,19 @@ body {
 .puzzle-section__canvas {
     width: 100%;
     aspect-ratio: 1.22;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
     background: var(--panel-fill);
     border: var(--puzzle-canvas-stroke) solid var(--puzzle-canvas-border);
     box-shadow: inset 0 0 0 var(--puzzle-canvas-stroke) #eef2f1;
+}
+
+.puzzle-section__image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
 }
 
 .puzzle-section__input {
