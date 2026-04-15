@@ -13,17 +13,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    const PLAY_LABEL = "\u518D\u751F\u3059\u308B";
-    const PAUSE_LABEL = "\u4E00\u6642\u505C\u6B62\u3059\u308B";
-    const SOLVED_LABEL = "\u6B63\u89E3";
+    const PLAY_LABEL = "\u518d\u751f\u3059\u308b";
+    const PAUSE_LABEL = "\u4e00\u6642\u505c\u6b62\u3059\u308b";
+    const SOLVED_LABEL = "\u6b63\u89e3";
     const TRANSITION_MS = 480;
     const LOGO_ROTATION_SECONDS = 189;
     const DISPLAY_DURATION_SECONDS = 24 * 60;
     const TEMP_ANSWERS = {
-        1: "かり",
-        2: "かり",
-        3: "かり",
-        4: "かり"
+        1: "kari1",
+        2: "kari2",
+        3: "kari3",
+        4: "kari4"
     };
 
     let isPlaying = false;

@@ -5,8 +5,8 @@
     --panel-fill: #fffdf8;
     --puzzle-blue: #17b9d7;
     --puzzle-canvas-border: #bcc9ca;
-    --main-card-width: min(94vw, 520px);
-    --main-card-height: min(94vw, 520px);
+    --main-card-width: min(94vw, 620px);
+    --main-card-height: min(94vw, 620px);
     --title-width: min(90vw, 640px);
     --puzzle-grid-width: min(92vw, 1180px);
     --puzzle-card-width: min(92vw, 560px);
@@ -65,7 +65,7 @@ body {
     border: 4px solid var(--panel-border);
     border-radius: 18px;
     box-shadow: 0 12px 30px rgba(75, 50, 0, 0.12);
-    padding: 22px 18px 28px;
+    padding: 24px 22px 30px;
 }
 
 .player-stage {
@@ -80,7 +80,7 @@ body {
 
 .player-stage__visuals {
     position: relative;
-    width: min(100%, 360px);
+    width: min(100%, 430px);
     aspect-ratio: 1;
     display: grid;
     place-items: center;
@@ -107,7 +107,7 @@ body {
 }
 
 .player-stage__record-stack {
-    width: min(86%, 310px);
+    width: min(90%, 403px);
     aspect-ratio: 1;
     display: grid;
     place-items: center;
@@ -360,15 +360,15 @@ body {
     }
 
     .content-panel {
-        width: min(94vw, 520px);
-        min-height: min(94vw, 520px);
+        width: min(94vw, 620px);
+        min-height: min(94vw, 620px);
         border-width: 3px;
         border-radius: 16px;
         padding: 18px 14px 22px;
     }
 
     .player-stage__visuals {
-        width: min(100%, 300px);
+        width: min(100%, 360px);
     }
 
     .player-seek::-webkit-slider-thumb {
