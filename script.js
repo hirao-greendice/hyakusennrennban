@@ -1,8 +1,8 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
+    const contentPanel = document.querySelector(".content-panel");
     const playerStage = document.querySelector(".player-stage");
-    const titleText = document.getElementById("title-text");
     const toggleButton = document.querySelector(".player-toggle");
     const audio = document.getElementById("bg-music");
     const logo = document.querySelector(".player-stage__logo");
@@ -50,6 +50,19 @@ document.addEventListener("DOMContentLoaded", function () {
     let rotationFrame = 0;
     let isSeeking = false;
 
+    function syncContentPanelScale() {
+        if (!contentPanel) {
+            return;
+        }
+
+        const designWidth = 620;
+        const designHeight = 760;
+        const scale = Math.min(1, contentPanel.clientWidth / designWidth);
+
+        contentPanel.style.setProperty("--content-panel-scale", String(scale));
+        contentPanel.style.height = String(designHeight * scale) + "px";
+    }
+
     function clearTransitionTimer() {
         if (transitionTimer) {
             window.clearTimeout(transitionTimer);
@@ -63,10 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function setStaticLabels() {
-        if (titleText) {
-            titleText.textContent = "\u6b8b\u308a10\u5206BGM";
-        }
-
         puzzleSections.forEach(function (section) {
             const puzzleId = Number(section.dataset.puzzleId);
             const tab = section.querySelector(".puzzle-section__tab");
@@ -293,6 +302,9 @@ document.addEventListener("DOMContentLoaded", function () {
             stopLogoRotation();
         }
     });
+
+    syncContentPanelScale();
+    window.addEventListener("resize", syncContentPanelScale);
 
     setStaticLabels();
     window.unlockHint1 = unlockHint1;

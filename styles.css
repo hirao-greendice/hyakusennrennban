@@ -5,11 +5,37 @@
     --panel-fill: #fffdf8;
     --puzzle-blue: #17b9d7;
     --puzzle-canvas-border: #bcc9ca;
+    --content-panel-design-width: 620px;
+    --content-panel-design-height: 760px;
     --main-card-width: min(94vw, 620px);
-    --main-card-height: min(112vw, 760px);
     --title-width: min(90vw, 640px);
     --puzzle-grid-width: min(92vw, 1180px);
     --puzzle-card-width: min(92vw, 560px);
+    --page-gap: clamp(18px, 2.4vw, 22px);
+    --page-padding-top: clamp(28px, 4vw, 36px);
+    --page-padding-side: clamp(14px, 2vw, 18px);
+    --page-padding-bottom: clamp(56px, 7vw, 64px);
+    --panel-stroke: clamp(3px, 0.45vw, 4px);
+    --panel-shadow-offset: clamp(6px, 0.9vw, 8px);
+    --puzzle-grid-gap: clamp(20px, 3.6vw, 28px);
+    --puzzle-grid-gap-column: clamp(20px, 2.4vw, 24px);
+    --puzzle-section-padding-top: clamp(8px, 1.8vw, 14px);
+    --puzzle-tab-width: min(62vw, 350px);
+    --puzzle-tab-padding-top: clamp(9px, 1.8vw, 10px);
+    --puzzle-tab-padding-side: clamp(24px, 5vw, 32px);
+    --puzzle-tab-padding-bottom: clamp(12px, 2.2vw, 14px);
+    --puzzle-tab-radius: clamp(12px, 2vw, 14px);
+    --puzzle-frame-padding: clamp(14px, 4vw, 28px);
+    --puzzle-frame-radius: clamp(10px, 1.8vw, 12px);
+    --puzzle-canvas-stroke: clamp(2px, 0.4vw, 3px);
+    --puzzle-input-margin-top: clamp(16px, 3vw, 18px);
+    --puzzle-input-padding-y: clamp(16px, 3vw, 20px);
+    --puzzle-input-padding-x: clamp(18px, 4vw, 24px);
+    --puzzle-button-margin-top: clamp(20px, 3.6vw, 24px);
+    --puzzle-button-padding-y: clamp(14px, 2.8vw, 16px);
+    --puzzle-button-padding-x: clamp(18px, 4vw, 24px);
+    --puzzle-button-radius: clamp(14px, 2vw, 16px);
+    --puzzle-button-shadow-offset: clamp(6px, 1.2vw, 8px);
 }
 
 * {
@@ -36,36 +62,54 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 22px;
-    padding: 36px 18px 64px;
+    gap: var(--page-gap);
+    padding:
+        var(--page-padding-top)
+        var(--page-padding-side)
+        var(--page-padding-bottom);
 }
 
 .title-banner {
     width: var(--title-width);
     background: var(--panel-fill);
-    border: 4px solid var(--panel-border);
-    box-shadow: 8px 8px 0 var(--panel-border);
+    border: var(--panel-stroke) solid var(--panel-border);
+    box-shadow: var(--panel-shadow-offset) var(--panel-shadow-offset) 0 var(--panel-border);
 }
 
 .title-banner__text {
     margin: 0;
-    padding: 16px 22px 14px;
+    padding:
+        clamp(14px, 2.6vw, 16px)
+        clamp(18px, 3.4vw, 22px)
+        clamp(12px, 2.2vw, 14px);
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    font-size: clamp(1.45rem, 2.2vw, 2.1rem);
+    font-size: clamp(1rem, 1.5vw, 1.45rem);
     font-weight: 700;
     line-height: 1.2;
     text-align: center;
 }
 
 .content-panel {
+    --content-panel-scale: 1;
     width: var(--main-card-width);
-    min-height: var(--main-card-height);
+    height: var(--content-panel-design-height);
+    position: relative;
+}
+
+.content-panel__frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--content-panel-design-width);
+    height: var(--content-panel-design-height);
+    padding: 24px 22px 30px;
     background: var(--panel-fill);
     border: 4px solid var(--panel-border);
     border-radius: 18px;
     box-shadow: 0 12px 30px rgba(75, 50, 0, 0.12);
-    padding: 24px 22px 30px;
+    transform: scale(var(--content-panel-scale));
+    transform-origin: top left;
 }
 
 .player-stage {
@@ -80,7 +124,7 @@ body {
 
 .player-stage__visuals {
     position: relative;
-    width: min(100%, 430px);
+    width: 430px;
     aspect-ratio: 1;
     margin-top: 50px;
     display: grid;
@@ -89,7 +133,7 @@ body {
 
 .player-stage__domain-marker {
     position: absolute;
-    top: -42px;
+    top: -44px;
     left: 50%;
     z-index: 3;
     display: grid;
@@ -140,7 +184,7 @@ body {
 }
 
 .player-stage__record-stack {
-    width: min(90%, 403px);
+    width: min(100%, 450px);
     aspect-ratio: 1;
     display: grid;
     place-items: center;
@@ -280,7 +324,7 @@ body {
     background: var(--panel-border);
     color: #ffffff;
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-size: 1.2rem;
     font-weight: 700;
     line-height: 1.1;
     cursor: pointer;
@@ -290,7 +334,7 @@ body {
     width: var(--puzzle-grid-width);
     display: grid;
     grid-template-columns: 1fr;
-    gap: 28px 24px;
+    gap: var(--puzzle-grid-gap) var(--puzzle-grid-gap-column);
 }
 
 .puzzle-section {
@@ -300,14 +344,17 @@ body {
     flex-direction: column;
     align-items: center;
     justify-self: center;
-    padding-top: 14px;
+    padding-top: var(--puzzle-section-padding-top);
 }
 
 .puzzle-section__tab {
-    min-width: min(52vw, 350px);
+    min-width: var(--puzzle-tab-width);
     margin-bottom: -4px;
-    padding: 10px 32px 14px;
-    border-radius: 14px 14px 0 0;
+    padding:
+        var(--puzzle-tab-padding-top)
+        var(--puzzle-tab-padding-side)
+        var(--puzzle-tab-padding-bottom);
+    border-radius: var(--puzzle-tab-radius) var(--puzzle-tab-radius) 0 0;
     background: var(--panel-border);
     color: var(--page-bg);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -319,9 +366,9 @@ body {
 
 .puzzle-section__frame {
     width: 100%;
-    padding: 28px;
-    border: 4px solid var(--panel-border);
-    border-radius: 12px;
+    padding: var(--puzzle-frame-padding);
+    border: var(--panel-stroke) solid var(--panel-border);
+    border-radius: var(--puzzle-frame-radius);
     background:
         repeating-linear-gradient(
             -45deg,
@@ -336,14 +383,14 @@ body {
     width: 100%;
     aspect-ratio: 1.22;
     background: var(--panel-fill);
-    border: 3px solid var(--puzzle-canvas-border);
-    box-shadow: inset 0 0 0 3px #eef2f1;
+    border: var(--puzzle-canvas-stroke) solid var(--puzzle-canvas-border);
+    box-shadow: inset 0 0 0 var(--puzzle-canvas-stroke) #eef2f1;
 }
 
 .puzzle-section__input {
     width: 100%;
-    margin-top: 18px;
-    padding: 20px 24px;
+    margin-top: var(--puzzle-input-margin-top);
+    padding: var(--puzzle-input-padding-y) var(--puzzle-input-padding-x);
     border: none;
     background: var(--panel-fill);
     color: #7a7a7a;
@@ -362,127 +409,25 @@ body {
 
 .puzzle-section__button {
     width: 100%;
-    margin-top: 24px;
-    padding: 16px 24px;
-    border: 4px solid var(--panel-border);
-    border-radius: 16px;
+    margin-top: var(--puzzle-button-margin-top);
+    padding: var(--puzzle-button-padding-y) var(--puzzle-button-padding-x);
+    border: var(--panel-stroke) solid var(--panel-border);
+    border-radius: var(--puzzle-button-radius);
     background: var(--panel-fill);
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     font-size: clamp(1.2rem, 2vw, 2.2rem);
     font-weight: 700;
     line-height: 1.1;
-    box-shadow: 8px 8px 0 var(--page-bg), 8px 8px 0 4px var(--panel-border);
+    box-shadow:
+        var(--puzzle-button-shadow-offset) var(--puzzle-button-shadow-offset) 0 var(--page-bg),
+        var(--puzzle-button-shadow-offset) var(--puzzle-button-shadow-offset) 0 var(--panel-stroke) var(--panel-border);
     cursor: pointer;
 }
 
 .puzzle-section[data-solved="true"] .puzzle-section__button {
     background: var(--panel-border);
     color: #ffffff;
-}
-
-@media (max-width: 640px) {
-    .page {
-        gap: 18px;
-        padding: 28px 14px 56px;
-    }
-
-    .title-banner {
-        width: min(92vw, 640px);
-        border-width: 3px;
-        box-shadow: 6px 6px 0 var(--panel-border);
-    }
-
-    .title-banner__text {
-        padding: 14px 18px 12px;
-    }
-
-    .content-panel {
-        width: min(94vw, 620px);
-        min-height: min(112vw, 760px);
-        border-width: 3px;
-        border-radius: 16px;
-        padding: 18px 14px 22px;
-    }
-
-    .player-stage__visuals {
-        width: min(100%, 360px);
-        margin-top: 26px;
-    }
-
-    .player-stage__domain-marker {
-        top: -34px;
-        row-gap: 4px;
-    }
-
-    .player-stage__domain-text {
-        font-size: 1.8rem;
-    }
-
-    .player-stage__triangle {
-        width: 11px;
-        transform: translateY(-8px);
-    }
-
-    .player-seek::-webkit-slider-thumb {
-        width: 18px;
-        height: 34px;
-        margin-top: -15px;
-    }
-
-    .player-seek::-moz-range-thumb {
-        width: 18px;
-        height: 34px;
-    }
-
-    .player-time {
-        padding: 6px 12px;
-        font-size: 0.95rem;
-    }
-
-    .player-toggle {
-        min-width: 132px;
-        padding: 11px 22px;
-    }
-
-    .puzzle-grid {
-        width: 100%;
-        gap: 20px;
-    }
-
-    .puzzle-section {
-        padding-top: 8px;
-    }
-
-    .puzzle-section__tab {
-        min-width: min(62vw, 350px);
-        padding: 9px 24px 12px;
-        border-radius: 12px 12px 0 0;
-    }
-
-    .puzzle-section__frame {
-        padding: 14px;
-        border-width: 3px;
-        border-radius: 10px;
-    }
-
-    .puzzle-section__canvas {
-        border-width: 2px;
-        box-shadow: inset 0 0 0 2px #eef2f1;
-    }
-
-    .puzzle-section__input {
-        margin-top: 16px;
-        padding: 16px 18px;
-    }
-
-    .puzzle-section__button {
-        margin-top: 20px;
-        padding: 14px 18px;
-        border-width: 3px;
-        border-radius: 14px;
-        box-shadow: 6px 6px 0 var(--page-bg), 6px 6px 0 3px var(--panel-border);
-    }
 }
 
 @media (min-width: 1100px) {
