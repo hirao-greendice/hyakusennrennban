@@ -165,6 +165,7 @@ body {
     display: grid;
     justify-items: center;
     row-gap: 10px;
+    padding-top: 5px;
 }
 
 .player-seek {
@@ -211,6 +212,7 @@ body {
     min-height: 34px;
     display: grid;
     place-items: center;
+    margin-top: 15px;
 }
 
 .player-time {
