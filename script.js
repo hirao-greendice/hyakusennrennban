@@ -50,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let rotationFrame = 0;
     let isSeeking = false;
 
+    audio.volume = 0.5;
+
     function syncContentPanelScale() {
         if (!contentPanel) {
             return;
