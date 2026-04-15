@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    <button class="sound-toggle" type="button" aria-pressed="false" aria-label="BGMをミュート">
+        <img class="sound-toggle__image sound-toggle__image--on" src="./assets/img/soundon.png" alt="">
+        <img class="sound-toggle__image sound-toggle__image--off" src="./assets/img/soundoff.png" alt="">
+    </button>
+
     <main class="page">
         <section class="title-banner" aria-label="BGM title">
             <p class="title-banner__text" id="title-text">このレコードは、あるものを表している。<br>レコード中央の一点が示す、ひらがな7文字が答え</p>
@@ -43,7 +48,9 @@
                         </div>
                     </div>
 
-                    <button class="player-toggle" type="button" aria-pressed="false">再生する</button>
+                    <div class="player-actions">
+                        <button class="player-toggle" type="button" aria-pressed="false">再生する</button>
+                    </div>
                 </div>
             </div>
         </section>

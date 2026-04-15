@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const contentPanel = document.querySelector(".content-panel");
     const playerStage = document.querySelector(".player-stage");
     const toggleButton = document.querySelector(".player-toggle");
+    const soundToggleButton = document.querySelector(".sound-toggle");
     const audio = document.getElementById("bg-music");
     const logo = document.querySelector(".player-stage__logo");
     const seekBar = document.querySelector(".player-seek");
@@ -11,7 +12,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const domainText = document.querySelector(".player-stage__domain-text");
     const puzzleSections = Array.from(document.querySelectorAll(".puzzle-section"));
 
-    if (!playerStage || !toggleButton || !audio || !logo || !seekBar || !timeDisplay || !domainText) {
+    if (
+        !playerStage ||
+        !toggleButton ||
+        !soundToggleButton ||
+        !audio ||
+        !logo ||
+        !seekBar ||
+        !timeDisplay ||
+        !domainText
+    ) {
         return;
     }
 
@@ -80,6 +90,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateButton() {
         toggleButton.textContent = isPlaying ? PAUSE_LABEL : PLAY_LABEL;
         toggleButton.setAttribute("aria-pressed", String(isPlaying));
+    }
+
+    function updateSoundToggle() {
+        soundToggleButton.setAttribute("aria-pressed", String(audio.muted));
+        soundToggleButton.setAttribute(
+            "aria-label",
+            audio.muted ? "\u30df\u30e5\u30fc\u30c8\u3092\u89e3\u9664" : "BGM\u3092\u30df\u30e5\u30fc\u30c8"
+        );
     }
 
     function setStaticLabels() {
@@ -377,6 +395,11 @@ document.addEventListener("DOMContentLoaded", function () {
         startPlayback();
     });
 
+    soundToggleButton.addEventListener("click", function () {
+        audio.muted = !audio.muted;
+        updateSoundToggle();
+    });
+
     seekBar.addEventListener("pointerdown", function () {
         isSeeking = true;
     });
@@ -416,6 +439,8 @@ document.addEventListener("DOMContentLoaded", function () {
         syncTimelineAnchor(true);
     });
 
+    audio.addEventListener("volumechange", updateSoundToggle);
+
     audio.addEventListener("pause", function () {
         syncTimelineAnchor(true);
 
@@ -436,5 +461,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.unlockTimeDisplay = unlockTimeDisplay;
     domainText.textContent = "";
     updateButton();
+    updateSoundToggle();
     updateSeekBar();
 });
