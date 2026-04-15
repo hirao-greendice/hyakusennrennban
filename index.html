@@ -11,9 +11,41 @@
         <section class="title-banner" aria-label="BGM title">
             <p class="title-banner__text">&#x6B8B;&#x308A;10&#x5206;BGM</p>
         </section>
-        <section class="content-panel" aria-label="Main content area"></section>
+
+        <section class="content-panel" aria-label="Main content area">
+            <div class="player-stage" data-player-state="stopped">
+                <div class="player-stage__visuals" aria-hidden="true">
+                    <img class="player-stage__case" src="./assets/img/case.png" alt="">
+                    <div class="player-stage__record-stack">
+                        <img class="player-stage__record" src="./assets/img/recode.png" alt="">
+                        <img class="player-stage__hint" src="./assets/img/hint1.png" alt="">
+                        <img class="player-stage__logo" src="./assets/img/logo.png" alt="">
+                    </div>
+                </div>
+
+                <div class="player-controls">
+                    <input
+                        class="player-seek"
+                        type="range"
+                        min="0"
+                        max="1000"
+                        step="1"
+                        value="0"
+                        aria-label="Playback position"
+                    >
+                    <div class="player-time-wrap">
+                        <div class="player-time" aria-live="polite">0:00 / 24:00</div>
+                    </div>
+                </div>
+
+                <button class="player-toggle" type="button" aria-pressed="false">
+                    &#x518D;&#x751F;&#x3059;&#x308B;
+                </button>
+            </div>
+        </section>
+
         <div class="puzzle-grid">
-            <section class="puzzle-section" aria-label="Puzzle answer area">
+            <section class="puzzle-section" data-puzzle-id="1" aria-label="Puzzle answer area">
                 <div class="puzzle-section__tab">1&#x554F;&#x76EE;</div>
                 <div class="puzzle-section__frame">
                     <div class="puzzle-section__canvas"></div>
@@ -21,13 +53,14 @@
                 <input
                     class="puzzle-section__input"
                     type="text"
-                    name="puzzle-answer"
+                    name="puzzle-answer-1"
                     placeholder="&#x7B54;&#x3048;&#x3092;&#x5165;&#x529B;"
-                    aria-label="Answer input"
+                    aria-label="Answer input 1"
                 >
                 <button class="puzzle-section__button" type="button">&#x9001;&#x4FE1;</button>
             </section>
-            <section class="puzzle-section" aria-label="Puzzle answer area">
+
+            <section class="puzzle-section" data-puzzle-id="2" aria-label="Puzzle answer area">
                 <div class="puzzle-section__tab">2&#x554F;&#x76EE;</div>
                 <div class="puzzle-section__frame">
                     <div class="puzzle-section__canvas"></div>
@@ -37,11 +70,12 @@
                     type="text"
                     name="puzzle-answer-2"
                     placeholder="&#x7B54;&#x3048;&#x3092;&#x5165;&#x529B;"
-                    aria-label="Answer input"
+                    aria-label="Answer input 2"
                 >
                 <button class="puzzle-section__button" type="button">&#x9001;&#x4FE1;</button>
             </section>
-            <section class="puzzle-section" aria-label="Puzzle answer area">
+
+            <section class="puzzle-section" data-puzzle-id="3" aria-label="Puzzle answer area">
                 <div class="puzzle-section__tab">3&#x554F;&#x76EE;</div>
                 <div class="puzzle-section__frame">
                     <div class="puzzle-section__canvas"></div>
@@ -51,11 +85,12 @@
                     type="text"
                     name="puzzle-answer-3"
                     placeholder="&#x7B54;&#x3048;&#x3092;&#x5165;&#x529B;"
-                    aria-label="Answer input"
+                    aria-label="Answer input 3"
                 >
                 <button class="puzzle-section__button" type="button">&#x9001;&#x4FE1;</button>
             </section>
-            <section class="puzzle-section" aria-label="Puzzle answer area">
+
+            <section class="puzzle-section" data-puzzle-id="4" aria-label="Puzzle answer area">
                 <div class="puzzle-section__tab">4&#x554F;&#x76EE;</div>
                 <div class="puzzle-section__frame">
                     <div class="puzzle-section__canvas"></div>
@@ -65,13 +100,14 @@
                     type="text"
                     name="puzzle-answer-4"
                     placeholder="&#x7B54;&#x3048;&#x3092;&#x5165;&#x529B;"
-                    aria-label="Answer input"
+                    aria-label="Answer input 4"
                 >
                 <button class="puzzle-section__button" type="button">&#x9001;&#x4FE1;</button>
             </section>
         </div>
     </main>
 
+    <audio id="bg-music" src="./assets/audio/music.mp3" preload="auto" loop></audio>
     <script src="./script.js"></script>
 </body>
 </html>

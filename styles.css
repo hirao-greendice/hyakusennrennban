@@ -1,11 +1,15 @@
 :root {
     --page-bg: #faeb0a;
     --grid-color: #ffdd00;
-    --panel-width: min(86vw, 980px);
-    --panel-height: min(72vh, 720px);
     --panel-border: #2f2001;
+    --panel-fill: #fffdf8;
     --puzzle-blue: #17b9d7;
     --puzzle-canvas-border: #bcc9ca;
+    --main-card-width: min(94vw, 520px);
+    --main-card-height: min(94vw, 520px);
+    --title-width: min(90vw, 640px);
+    --puzzle-grid-width: min(92vw, 1180px);
+    --puzzle-card-width: min(92vw, 560px);
 }
 
 * {
@@ -32,40 +36,217 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     gap: 22px;
-    padding: 48px 24px 72px;
+    padding: 36px 18px 64px;
 }
 
 .title-banner {
-    width: min(82vw, 860px);
-    background: #fffdf8;
+    width: var(--title-width);
+    background: var(--panel-fill);
     border: 4px solid var(--panel-border);
     box-shadow: 8px 8px 0 var(--panel-border);
 }
 
 .title-banner__text {
     margin: 0;
-    padding: 16px 24px 14px;
+    padding: 16px 22px 14px;
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+    font-size: clamp(1.45rem, 2.2vw, 2.1rem);
     font-weight: 700;
     line-height: 1.2;
     text-align: center;
 }
 
 .content-panel {
-    width: var(--panel-width);
-    height: var(--panel-height);
-    background: #fffdf8;
+    width: var(--main-card-width);
+    min-height: var(--main-card-height);
+    background: var(--panel-fill);
     border: 4px solid var(--panel-border);
-    border-radius: 20px;
-    box-shadow: 0 12px 30px rgba(75, 50, 0, 0.14);
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(75, 50, 0, 0.12);
+    padding: 22px 18px 28px;
+}
+
+.player-stage {
+    width: 100%;
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto auto;
+    justify-items: center;
+    align-items: center;
+    row-gap: 14px;
+}
+
+.player-stage__visuals {
+    position: relative;
+    width: min(100%, 360px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+}
+
+.player-stage__case,
+.player-stage__record-stack {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    transform-origin: center center;
+    transition:
+        transform 480ms ease,
+        opacity 440ms ease;
+}
+
+.player-stage__case {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.player-stage__record-stack {
+    width: min(86%, 310px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform: scale(0.72);
+}
+
+.player-stage__record,
+.player-stage__hint,
+.player-stage__logo {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.player-stage__hint {
+    opacity: 0;
+    transition: opacity 220ms ease;
+}
+
+.player-stage__logo {
+    width: 38%;
+}
+
+.player-stage[data-hint1="visible"] .player-stage__hint {
+    opacity: 1;
+}
+
+.player-stage[data-player-state="stopped"] .player-stage__case {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.player-stage[data-player-state="to-play"] .player-stage__case,
+.player-stage[data-player-state="playing"] .player-stage__case,
+.player-stage[data-player-state="to-stop"] .player-stage__case {
+    opacity: 0;
+    transform: scale(0.72);
+}
+
+.player-stage[data-player-state="stopped"] .player-stage__record-stack,
+.player-stage[data-player-state="to-play"] .player-stage__record-stack,
+.player-stage[data-player-state="to-stop"] .player-stage__record-stack {
+    opacity: 0;
+    transform: scale(0.72);
+}
+
+.player-stage[data-player-state="playing"] .player-stage__record-stack {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.player-controls {
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    row-gap: 10px;
+}
+
+.player-seek {
+    width: 100%;
+    margin: 0;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.player-seek::-webkit-slider-runnable-track {
+    height: 10px;
+    border: 3px solid var(--panel-border);
+    border-radius: 999px;
+    background: #ffe500;
+}
+
+.player-seek::-webkit-slider-thumb {
+    appearance: none;
+    width: 22px;
+    height: 40px;
+    margin-top: -18px;
+    border: none;
+    border-radius: 999px;
+    background: var(--panel-border);
+}
+
+.player-seek::-moz-range-track {
+    height: 10px;
+    border: 3px solid var(--panel-border);
+    border-radius: 999px;
+    background: #ffe500;
+}
+
+.player-seek::-moz-range-thumb {
+    width: 22px;
+    height: 40px;
+    border: none;
+    border-radius: 999px;
+    background: var(--panel-border);
+}
+
+.player-time-wrap {
+    min-height: 34px;
+    display: grid;
+    place-items: center;
+}
+
+.player-time {
+    padding: 6px 14px;
+    border: 3px solid var(--panel-border);
+    background: #ffe500;
+    color: var(--panel-border);
+    font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.player-time.is-visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.player-toggle {
+    min-width: 140px;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 999px;
+    background: var(--panel-border);
+    color: #ffffff;
+    font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    cursor: pointer;
 }
 
 .puzzle-grid {
-    width: min(92vw, 1180px);
+    width: var(--puzzle-grid-width);
     display: grid;
     grid-template-columns: 1fr;
     gap: 28px 24px;
@@ -73,15 +254,12 @@ body {
 
 .puzzle-section {
     width: 100%;
+    max-width: var(--puzzle-card-width);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 14px;
-}
-
-.puzzle-section:only-child {
-    max-width: 980px;
     justify-self: center;
+    padding-top: 14px;
 }
 
 .puzzle-section__tab {
@@ -99,7 +277,7 @@ body {
 }
 
 .puzzle-section__frame {
-    width: min(78vw, 860px);
+    width: 100%;
     padding: 28px;
     border: 4px solid var(--panel-border);
     border-radius: 12px;
@@ -116,17 +294,17 @@ body {
 .puzzle-section__canvas {
     width: 100%;
     aspect-ratio: 1.22;
-    background: #fffdf8;
+    background: var(--panel-fill);
     border: 3px solid var(--puzzle-canvas-border);
     box-shadow: inset 0 0 0 3px #eef2f1;
 }
 
 .puzzle-section__input {
-    width: min(73vw, 760px);
+    width: 100%;
     margin-top: 18px;
     padding: 20px 24px;
     border: none;
-    background: #fffdf8;
+    background: var(--panel-fill);
     color: #7a7a7a;
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     font-size: clamp(1.05rem, 1.8vw, 1.9rem);
@@ -142,12 +320,12 @@ body {
 }
 
 .puzzle-section__button {
-    width: min(73vw, 760px);
+    width: 100%;
     margin-top: 24px;
     padding: 16px 24px;
     border: 4px solid var(--panel-border);
     border-radius: 16px;
-    background: #fffdf8;
+    background: var(--panel-fill);
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     font-size: clamp(1.2rem, 2vw, 2.2rem);
@@ -157,19 +335,19 @@ body {
     cursor: pointer;
 }
 
-@media (max-width: 640px) {
-    :root {
-        --panel-width: min(90vw, 980px);
-        --panel-height: min(70vh, 720px);
-    }
+.puzzle-section[data-solved="true"] .puzzle-section__button {
+    background: var(--panel-border);
+    color: #ffffff;
+}
 
+@media (max-width: 640px) {
     .page {
-        padding: 28px 16px 56px;
         gap: 18px;
+        padding: 28px 14px 56px;
     }
 
     .title-banner {
-        width: min(88vw, 860px);
+        width: min(92vw, 640px);
         border-width: 3px;
         box-shadow: 6px 6px 0 var(--panel-border);
     }
@@ -179,8 +357,36 @@ body {
     }
 
     .content-panel {
+        width: min(94vw, 520px);
+        min-height: min(94vw, 520px);
         border-width: 3px;
         border-radius: 16px;
+        padding: 18px 14px 22px;
+    }
+
+    .player-stage__visuals {
+        width: min(100%, 300px);
+    }
+
+    .player-seek::-webkit-slider-thumb {
+        width: 18px;
+        height: 34px;
+        margin-top: -15px;
+    }
+
+    .player-seek::-moz-range-thumb {
+        width: 18px;
+        height: 34px;
+    }
+
+    .player-time {
+        padding: 6px 12px;
+        font-size: 0.95rem;
+    }
+
+    .player-toggle {
+        min-width: 132px;
+        padding: 11px 22px;
     }
 
     .puzzle-grid {
@@ -189,7 +395,6 @@ body {
     }
 
     .puzzle-section {
-        width: 100%;
         padding-top: 8px;
     }
 
@@ -200,7 +405,6 @@ body {
     }
 
     .puzzle-section__frame {
-        width: min(90vw, 860px);
         padding: 14px;
         border-width: 3px;
         border-radius: 10px;
@@ -212,13 +416,11 @@ body {
     }
 
     .puzzle-section__input {
-        width: min(82vw, 760px);
         margin-top: 16px;
         padding: 16px 18px;
     }
 
     .puzzle-section__button {
-        width: min(82vw, 760px);
         margin-top: 20px;
         padding: 14px 18px;
         border-width: 3px;
@@ -231,19 +433,5 @@ body {
     .puzzle-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: start;
-    }
-
-    .puzzle-section:only-child {
-        grid-column: 1 / -1;
-    }
-
-    .puzzle-section__tab {
-        min-width: min(20vw, 350px);
-    }
-
-    .puzzle-section__frame,
-    .puzzle-section__input,
-    .puzzle-section__button {
-        width: 100%;
     }
 }
