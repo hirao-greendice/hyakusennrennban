@@ -6,7 +6,7 @@
     --puzzle-blue: #17b9d7;
     --puzzle-canvas-border: #bcc9ca;
     --main-card-width: min(94vw, 620px);
-    --main-card-height: min(94vw, 620px);
+    --main-card-height: min(112vw, 760px);
     --title-width: min(90vw, 640px);
     --puzzle-grid-width: min(92vw, 1180px);
     --puzzle-card-width: min(92vw, 560px);
@@ -82,8 +82,41 @@ body {
     position: relative;
     width: min(100%, 430px);
     aspect-ratio: 1;
+    margin-top: 50px;
     display: grid;
     place-items: center;
+}
+
+.player-stage__domain-marker {
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    z-index: 3;
+    display: grid;
+    justify-items: center;
+    row-gap: 10px;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 220ms ease;
+    pointer-events: none;
+}
+
+.player-stage__domain-text {
+    min-height: 1em;
+    color: var(--panel-border);
+    font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: lowercase;
+    letter-spacing: 0.08em;
+}
+
+.player-stage__triangle {
+    width: 13px;
+    height: auto;
+    display: block;
+    transform: translateY(-10px);
 }
 
 .player-stage__case,
@@ -159,6 +192,11 @@ body {
 .player-stage[data-player-state="playing"] .player-stage__record-stack {
     opacity: 1;
     transform: scale(1);
+}
+
+.player-stage[data-player-state="to-play"] .player-stage__domain-marker,
+.player-stage[data-player-state="playing"] .player-stage__domain-marker {
+    opacity: 1;
 }
 
 .player-controls {
@@ -361,7 +399,7 @@ body {
 
     .content-panel {
         width: min(94vw, 620px);
-        min-height: min(94vw, 620px);
+        min-height: min(112vw, 760px);
         border-width: 3px;
         border-radius: 16px;
         padding: 18px 14px 22px;
@@ -369,6 +407,21 @@ body {
 
     .player-stage__visuals {
         width: min(100%, 360px);
+        margin-top: 26px;
+    }
+
+    .player-stage__domain-marker {
+        top: -34px;
+        row-gap: 4px;
+    }
+
+    .player-stage__domain-text {
+        font-size: 1.8rem;
+    }
+
+    .player-stage__triangle {
+        width: 11px;
+        transform: translateY(-8px);
     }
 
     .player-seek::-webkit-slider-thumb {

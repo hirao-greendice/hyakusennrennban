@@ -2,14 +2,16 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     const playerStage = document.querySelector(".player-stage");
+    const titleText = document.getElementById("title-text");
     const toggleButton = document.querySelector(".player-toggle");
     const audio = document.getElementById("bg-music");
     const logo = document.querySelector(".player-stage__logo");
     const seekBar = document.querySelector(".player-seek");
     const timeDisplay = document.querySelector(".player-time");
+    const domainText = document.querySelector(".player-stage__domain-text");
     const puzzleSections = Array.from(document.querySelectorAll(".puzzle-section"));
 
-    if (!playerStage || !toggleButton || !audio || !logo || !seekBar || !timeDisplay) {
+    if (!playerStage || !toggleButton || !audio || !logo || !seekBar || !timeDisplay || !domainText) {
         return;
     }
 
@@ -17,8 +19,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const PAUSE_LABEL = "\u4e00\u6642\u505c\u6b62\u3059\u308b";
     const SOLVED_LABEL = "\u6b63\u89e3";
     const TRANSITION_MS = 480;
-    const LOGO_ROTATION_SECONDS = 189;
+    const LOGO_ROTATION_SECONDS = 90;
     const DISPLAY_DURATION_SECONDS = 24 * 60;
+    const EQUATOR_DOMAINS = [
+        [53, 70, "BR"],
+        [70, 75, "CO"],
+        [75, 81, "EC"],
+        [91, 93, "EC"],
+        [230, 231, "ID"],
+        [240, 241, "ID"],
+        [243, 252, "ID"],
+        [246, 263, "ID"],
+        [316, 319, "SO"],
+        [319, 326, "KE"],
+        [326, 330, "UG"],
+        [330, 342, "CD"],
+        [342, 346, "CG"],
+        [346, 351, "GA"],
+        [354, 356, "ST"]
+    ];
     const TEMP_ANSWERS = {
         1: "kari1",
         2: "kari2",
@@ -41,6 +60,31 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateButton() {
         toggleButton.textContent = isPlaying ? PAUSE_LABEL : PLAY_LABEL;
         toggleButton.setAttribute("aria-pressed", String(isPlaying));
+    }
+
+    function setStaticLabels() {
+        if (titleText) {
+            titleText.textContent = "\u6b8b\u308a10\u5206BGM";
+        }
+
+        puzzleSections.forEach(function (section) {
+            const puzzleId = Number(section.dataset.puzzleId);
+            const tab = section.querySelector(".puzzle-section__tab");
+            const input = section.querySelector(".puzzle-section__input");
+            const button = section.querySelector(".puzzle-section__button");
+
+            if (tab) {
+                tab.textContent = String(puzzleId) + "\u554f\u76ee";
+            }
+
+            if (input) {
+                input.placeholder = "\u7b54\u3048\u3092\u5165\u529b";
+            }
+
+            if (button) {
+                button.textContent = "\u9001\u4fe1";
+            }
+        });
     }
 
     function unlockHint1() {
@@ -83,9 +127,21 @@ document.addEventListener("DOMContentLoaded", function () {
         seekBar.value = String(Math.round((audio.currentTime / audio.duration) * 1000));
     }
 
+    function getEquatorDomain(angle) {
+        const normalizedAngle = ((angle % 360) + 360) % 360;
+        const domainEntry = EQUATOR_DOMAINS.find(function (range) {
+            return normalizedAngle >= range[0] && normalizedAngle <= range[1];
+        });
+
+        return domainEntry ? domainEntry[2] : "";
+    }
+
     function updateLogoRotation() {
         const rotationProgress = (audio.currentTime % LOGO_ROTATION_SECONDS) / LOGO_ROTATION_SECONDS;
-        logo.style.transform = "rotate(" + (rotationProgress * 360) + "deg)";
+        const rotationDegrees = rotationProgress * 360;
+
+        logo.style.transform = "rotate(" + rotationDegrees + "deg)";
+        domainText.textContent = getEquatorDomain(rotationDegrees);
         updateSeekBar();
         updateTimeDisplay();
 
@@ -133,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
         playerStage.dataset.playerState = "to-stop";
         isPlaying = false;
         updateButton();
+        domainText.textContent = "";
         stopLogoRotation();
         audio.pause();
 
@@ -237,8 +294,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    setStaticLabels();
     window.unlockHint1 = unlockHint1;
     window.unlockTimeDisplay = unlockTimeDisplay;
+    domainText.textContent = "";
     updateButton();
     updateSeekBar();
 });

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -9,12 +9,16 @@
 <body>
     <main class="page">
         <section class="title-banner" aria-label="BGM title">
-            <p class="title-banner__text">残り10分BGM</p>
+            <p class="title-banner__text" id="title-text">残り10分BGM</p>
         </section>
 
         <section class="content-panel" aria-label="Main content area">
             <div class="player-stage" data-player-state="stopped">
                 <div class="player-stage__visuals" aria-hidden="true">
+                    <div class="player-stage__domain-marker">
+                        <span class="player-stage__domain-text"></span>
+                        <img class="player-stage__triangle" src="./assets/img/triangle.png" alt="">
+                    </div>
                     <img class="player-stage__case" src="./assets/img/case.png" alt="">
                     <div class="player-stage__record-stack">
                         <img class="player-stage__record" src="./assets/img/recode.png" alt="">
@@ -38,9 +42,7 @@
                     </div>
                 </div>
 
-                <button class="player-toggle" type="button" aria-pressed="false">
-                    再生する
-                </button>
+                <button class="player-toggle" type="button" aria-pressed="false">再生する</button>
             </div>
         </section>
 
