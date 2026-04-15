@@ -17,6 +17,7 @@
     --page-padding-bottom: clamp(56px, 7vw, 64px);
     --panel-stroke: clamp(3px, 0.45vw, 4px);
     --panel-shadow-offset: clamp(6px, 0.9vw, 8px);
+    --record-stack-size: 443px;
     --puzzle-grid-gap: clamp(20px, 3.6vw, 28px);
     --puzzle-grid-gap-column: clamp(20px, 2.4vw, 24px);
     --puzzle-section-padding-top: clamp(8px, 1.8vw, 14px);
@@ -133,13 +134,13 @@ body {
 
 .player-stage__domain-marker {
     position: absolute;
-    top: -44px;
+    top: calc(50% - (var(--record-stack-size) / 2));
     left: 50%;
     z-index: 3;
     display: grid;
     justify-items: center;
     row-gap: 10px;
-    transform: translateX(-50%);
+    transform: translate(-50%, -100%);
     opacity: 0;
     transition: opacity 220ms ease;
     pointer-events: none;
@@ -160,14 +161,13 @@ body {
     width: 13px;
     height: auto;
     display: block;
-    transform: translateY(-10px);
 }
 
 .player-stage__case,
 .player-stage__record-stack {
     position: absolute;
-    inset: 0;
-    margin: auto;
+    top: 50%;
+    left: 50%;
     transform-origin: center center;
     transition:
         transform 480ms ease,
@@ -180,16 +180,16 @@ body {
     border-radius: 10px;
     object-fit: contain;
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .player-stage__record-stack {
-    width: min(100%, 450px);
+    width: var(--record-stack-size);
     aspect-ratio: 1;
     display: grid;
     place-items: center;
     opacity: 0;
-    transform: scale(0.72);
+    transform: translate(-50%, -50%) scale(0.72);
 }
 
 .player-stage__record,
@@ -216,26 +216,26 @@ body {
 
 .player-stage[data-player-state="stopped"] .player-stage__case {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .player-stage[data-player-state="to-play"] .player-stage__case,
 .player-stage[data-player-state="playing"] .player-stage__case,
 .player-stage[data-player-state="to-stop"] .player-stage__case {
     opacity: 0;
-    transform: scale(0.72);
+    transform: translate(-50%, -50%) scale(0.72);
 }
 
 .player-stage[data-player-state="stopped"] .player-stage__record-stack,
 .player-stage[data-player-state="to-play"] .player-stage__record-stack,
 .player-stage[data-player-state="to-stop"] .player-stage__record-stack {
     opacity: 0;
-    transform: scale(0.72);
+    transform: translate(-50%, -50%) scale(0.72);
 }
 
 .player-stage[data-player-state="playing"] .player-stage__record-stack {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .player-stage[data-player-state="to-play"] .player-stage__domain-marker,
