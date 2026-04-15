@@ -26,9 +26,13 @@
     --puzzle-tab-padding-side: clamp(24px, 5vw, 32px);
     --puzzle-tab-padding-bottom: clamp(12px, 2.2vw, 14px);
     --puzzle-tab-radius: clamp(12px, 2vw, 14px);
-    --puzzle-frame-padding: clamp(14px, 4vw, 28px);
+    --puzzle-frame-padding: clamp(6px, 1.6vw, 10px);
     --puzzle-frame-radius: clamp(10px, 1.8vw, 12px);
     --puzzle-canvas-stroke: clamp(2px, 0.4vw, 3px);
+    --puzzle-canvas-aspect-ratio: 297 / 210;
+    --puzzle-frame-bg: #dff5fb;
+    --puzzle-frame-stripe-strong: rgba(19, 174, 202, 0.22);
+    --puzzle-frame-stripe-soft: rgba(255, 255, 255, 0.22);
     --puzzle-input-margin-top: clamp(16px, 3vw, 18px);
     --puzzle-input-padding-y: clamp(16px, 3vw, 20px);
     --puzzle-input-padding-x: clamp(18px, 4vw, 24px);
@@ -436,13 +440,14 @@ body {
     padding: var(--puzzle-frame-padding);
     border: var(--panel-stroke) solid var(--panel-border);
     border-radius: var(--puzzle-frame-radius);
-    background:
+    background-color: var(--puzzle-frame-bg);
+    background-image:
         repeating-linear-gradient(
             -45deg,
-            #13aeca 0,
-            #13aeca 4px,
-            var(--puzzle-blue) 4px,
-            var(--puzzle-blue) 8px
+            var(--puzzle-frame-stripe-strong) 0,
+            var(--puzzle-frame-stripe-strong) 4px,
+            var(--puzzle-frame-stripe-soft) 4px,
+            var(--puzzle-frame-stripe-soft) 8px
         );
     cursor: zoom-in;
 }
@@ -454,7 +459,7 @@ body {
 
 .puzzle-section__canvas {
     width: 100%;
-    aspect-ratio: 1.22;
+    aspect-ratio: var(--puzzle-canvas-aspect-ratio);
     display: grid;
     place-items: center;
     overflow: hidden;
@@ -518,13 +523,14 @@ body.has-puzzle-modal {
     padding: clamp(16px, 3vw, 28px);
     border: var(--panel-stroke) solid var(--panel-border);
     border-radius: var(--puzzle-frame-radius);
-    background:
+    background-color: var(--puzzle-frame-bg);
+    background-image:
         repeating-linear-gradient(
             -45deg,
-            #13aeca 0,
-            #13aeca 4px,
-            var(--puzzle-blue) 4px,
-            var(--puzzle-blue) 8px
+            var(--puzzle-frame-stripe-strong) 0,
+            var(--puzzle-frame-stripe-strong) 4px,
+            var(--puzzle-frame-stripe-soft) 4px,
+            var(--puzzle-frame-stripe-soft) 8px
         );
     box-shadow: 0 20px 40px rgba(47, 32, 1, 0.25);
 }
@@ -535,11 +541,20 @@ body.has-puzzle-modal {
     height: min(72vh, 700px);
 }
 
-.puzzle-section__input {
+.puzzle-section__answer-row {
     width: 100%;
     margin-top: var(--puzzle-input-margin-top);
+    display: flex;
+    align-items: stretch;
+    gap: clamp(8px, 1.4vw, 12px);
+}
+
+.puzzle-section__input {
+    flex: 1 1 auto;
+    min-width: 0;
     padding: var(--puzzle-input-padding-y) var(--puzzle-input-padding-x);
     border: none;
+    border-radius: clamp(12px, 1.6vw, 18px);
     background: var(--panel-fill);
     color: #7a7a7a;
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -556,8 +571,7 @@ body.has-puzzle-modal {
 }
 
 .puzzle-section__button {
-    width: 100%;
-    margin-top: var(--puzzle-button-margin-top);
+    flex: 0 0 auto;
     padding: var(--puzzle-button-padding-y) var(--puzzle-button-padding-x);
     border: var(--panel-stroke) solid var(--panel-border);
     border-radius: var(--puzzle-button-radius);
@@ -596,5 +610,13 @@ body.has-puzzle-modal {
     .puzzle-modal__frame .puzzle-section__canvas {
         min-height: min(64vh, 480px);
         height: min(64vh, 480px);
+    }
+
+    .puzzle-section__answer-row {
+        gap: 8px;
+    }
+
+    .puzzle-section__button {
+        padding-inline: clamp(16px, 5vw, 24px);
     }
 }

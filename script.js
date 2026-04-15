@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
         [354, 356, "ST"]
     ];
     const TEMP_ANSWERS = {
-        1: "wave",
-        2: "kari2",
-        3: "kari3",
-        4: "kari4"
+        1: ["wave", "ウェーブ"],
+        2: ["kari2"],
+        3: ["kari3"],
+        4: ["sing", "シング"]
     };
 
     let isPlaying = false;
@@ -393,7 +393,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (normalizeAnswer(input.value) !== TEMP_ANSWERS[puzzleId]) {
+        if (!TEMP_ANSWERS[puzzleId].includes(normalizeAnswer(input.value))) {
             return;
         }
 
