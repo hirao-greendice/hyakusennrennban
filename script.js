@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         [354, 356, "ST"]
     ];
     const TEMP_ANSWERS = {
-        1: "kari1",
+        1: "wave",
         2: "kari2",
         3: "kari3",
         4: "kari4"
