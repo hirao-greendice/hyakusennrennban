@@ -79,14 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function setStaticLabels() {
         puzzleSections.forEach(function (section) {
-            const puzzleId = Number(section.dataset.puzzleId);
-            const tab = section.querySelector(".puzzle-section__tab");
             const input = section.querySelector(".puzzle-section__input");
             const button = section.querySelector(".puzzle-section__button");
-
-            if (tab) {
-                tab.textContent = String(puzzleId) + "\u554f\u76ee";
-            }
 
             if (input) {
                 input.placeholder = "\u7b54\u3048\u3092\u5165\u529b";
