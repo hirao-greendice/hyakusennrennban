@@ -140,9 +140,11 @@ body {
     display: grid;
     justify-items: center;
     row-gap: 10px;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -100%) scale(0.72);
     opacity: 0;
-    transition: opacity 220ms ease;
+    transition:
+        transform 480ms ease,
+        opacity 440ms ease;
     pointer-events: none;
 }
 
@@ -238,9 +240,9 @@ body {
     transform: translate(-50%, -50%) scale(1);
 }
 
-.player-stage[data-player-state="to-play"] .player-stage__domain-marker,
 .player-stage[data-player-state="playing"] .player-stage__domain-marker {
     opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
 }
 
 .player-controls {
@@ -307,6 +309,10 @@ body {
     font-size: 1.05rem;
     font-weight: 700;
     line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    min-width: 11ch;
+    text-align: center;
     visibility: hidden;
     opacity: 0;
 }

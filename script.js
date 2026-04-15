@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const TRANSITION_MS = 480;
     const LOGO_ROTATION_SECONDS = 90;
     const DISPLAY_DURATION_SECONDS = 24 * 60;
+    const DISPLAY_DECIMAL_PLACES = 0;
+    const AUDIO_DRIFT_TOLERANCE_SECONDS = 0.12;
+    const AUDIO_BACKTRACK_TOLERANCE_SECONDS = 0.03;
     const EQUATOR_DOMAINS = [
         [53, 70, "BR"],
         [70, 75, "CO"],
@@ -49,6 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let transitionTimer = 0;
     let rotationFrame = 0;
     let isSeeking = false;
+    let timelineAnchorAudioTime = 0;
+    let timelineAnchorFrameTime = 0;
 
     audio.volume = 0.5;
 
@@ -101,19 +106,110 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTimeDisplay();
     }
 
-    function formatDisplayTime(totalSeconds) {
-        const safeSeconds = Math.max(0, Math.min(DISPLAY_DURATION_SECONDS, totalSeconds));
-        const minutes = Math.floor(safeSeconds / 60);
-        const seconds = Math.floor(safeSeconds % 60);
-        return String(minutes) + ":" + String(seconds).padStart(2, "0");
+    function hasFiniteDuration() {
+        return Number.isFinite(audio.duration) && audio.duration > 0;
     }
 
-    function getMappedDisplaySeconds() {
-        if (!audio.duration || !Number.isFinite(audio.duration)) {
+    function clampAudioTime(value) {
+        if (!hasFiniteDuration()) {
             return 0;
         }
 
-        return (audio.currentTime / audio.duration) * DISPLAY_DURATION_SECONDS;
+        return Math.max(0, Math.min(audio.duration, value));
+    }
+
+    function formatDisplayTime(totalSeconds) {
+        const safeSeconds = Math.max(0, Math.min(DISPLAY_DURATION_SECONDS, totalSeconds));
+        const unitsPerSecond = Math.pow(10, DISPLAY_DECIMAL_PLACES);
+        const safeUnits = Math.round(safeSeconds * unitsPerSecond);
+        const minutes = Math.floor(safeUnits / (60 * unitsPerSecond));
+        const secondUnits = safeUnits - (minutes * 60 * unitsPerSecond);
+        const seconds = Math.floor(secondUnits / unitsPerSecond);
+
+        if (DISPLAY_DECIMAL_PLACES === 0) {
+            return String(minutes) + ":" + String(seconds).padStart(2, "0");
+        }
+
+        const fraction = secondUnits % unitsPerSecond;
+        return (
+            String(minutes) +
+            ":" +
+            String(seconds).padStart(2, "0") +
+            "." +
+            String(fraction).padStart(DISPLAY_DECIMAL_PLACES, "0")
+        );
+    }
+
+    function needsTimelineResync(actualAudioTime, estimatedAudioTime) {
+        return (
+            Math.abs(actualAudioTime - estimatedAudioTime) > AUDIO_DRIFT_TOLERANCE_SECONDS ||
+            actualAudioTime + AUDIO_BACKTRACK_TOLERANCE_SECONDS < estimatedAudioTime
+        );
+    }
+
+    function syncTimelineAnchor(forceToCurrentTime) {
+        const now = performance.now();
+        const actualAudioTime = clampAudioTime(audio.currentTime);
+
+        if (!hasFiniteDuration()) {
+            timelineAnchorAudioTime = 0;
+            timelineAnchorFrameTime = now;
+            return 0;
+        }
+
+        if (
+            forceToCurrentTime ||
+            !timelineAnchorFrameTime ||
+            !isPlaying ||
+            audio.paused ||
+            isSeeking
+        ) {
+            timelineAnchorAudioTime = actualAudioTime;
+            timelineAnchorFrameTime = now;
+            return actualAudioTime;
+        }
+
+        const estimatedAudioTime = clampAudioTime(
+            timelineAnchorAudioTime + ((now - timelineAnchorFrameTime) / 1000) * audio.playbackRate
+        );
+
+        if (needsTimelineResync(actualAudioTime, estimatedAudioTime)) {
+            timelineAnchorAudioTime = actualAudioTime;
+            timelineAnchorFrameTime = now;
+            return actualAudioTime;
+        }
+
+        return estimatedAudioTime;
+    }
+
+    function getDisplayAudioTime() {
+        if (!hasFiniteDuration()) {
+            return 0;
+        }
+
+        if (!isPlaying || audio.paused || isSeeking) {
+            return syncTimelineAnchor(true);
+        }
+
+        const now = performance.now();
+        const estimatedAudioTime = clampAudioTime(
+            timelineAnchorAudioTime + ((now - timelineAnchorFrameTime) / 1000) * audio.playbackRate
+        );
+        const actualAudioTime = clampAudioTime(audio.currentTime);
+
+        if (needsTimelineResync(actualAudioTime, estimatedAudioTime)) {
+            return syncTimelineAnchor(true);
+        }
+
+        return estimatedAudioTime;
+    }
+
+    function getMappedDisplaySeconds(audioTime) {
+        if (!hasFiniteDuration()) {
+            return 0;
+        }
+
+        return (audioTime / audio.duration) * DISPLAY_DURATION_SECONDS;
     }
 
     function updateTimeDisplay() {
@@ -121,15 +217,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        timeDisplay.textContent = formatDisplayTime(getMappedDisplaySeconds()) + " / 24:00";
+        const displayAudioTime = getDisplayAudioTime();
+        timeDisplay.textContent =
+            formatDisplayTime(getMappedDisplaySeconds(displayAudioTime)) +
+            " / " +
+            formatDisplayTime(DISPLAY_DURATION_SECONDS);
     }
 
     function updateSeekBar() {
-        if (isSeeking || !audio.duration || !Number.isFinite(audio.duration)) {
+        if (isSeeking || !hasFiniteDuration()) {
             return;
         }
 
-        seekBar.value = String(Math.round((audio.currentTime / audio.duration) * 1000));
+        seekBar.value = String(Math.round((getDisplayAudioTime() / audio.duration) * 1000));
     }
 
     function getEquatorDomain(angle) {
@@ -142,7 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateLogoRotation() {
-        const rotationProgress = (audio.currentTime % LOGO_ROTATION_SECONDS) / LOGO_ROTATION_SECONDS;
+        const displayAudioTime = getDisplayAudioTime();
+        const rotationProgress = (displayAudioTime % LOGO_ROTATION_SECONDS) / LOGO_ROTATION_SECONDS;
         const rotationDegrees = rotationProgress * 360;
 
         logo.style.transform = "rotate(" + rotationDegrees + "deg)";
@@ -174,6 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             await audio.play();
             isPlaying = true;
+            syncTimelineAnchor(true);
             updateButton();
             startLogoRotation();
 
@@ -197,6 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
         domainText.textContent = "";
         stopLogoRotation();
         audio.pause();
+        syncTimelineAnchor(true);
 
         transitionTimer = window.setTimeout(function () {
             playerStage.dataset.playerState = "stopped";
@@ -205,11 +308,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function applySeek() {
-        if (!audio.duration || !Number.isFinite(audio.duration)) {
+        if (!hasFiniteDuration()) {
             return;
         }
 
         audio.currentTime = (Number(seekBar.value) / 1000) * audio.duration;
+        syncTimelineAnchor(true);
         updateLogoRotation();
     }
 
@@ -285,11 +389,36 @@ document.addEventListener("DOMContentLoaded", function () {
     seekBar.addEventListener("input", applySeek);
 
     audio.addEventListener("loadedmetadata", function () {
+        syncTimelineAnchor(true);
         updateSeekBar();
         updateTimeDisplay();
     });
 
+    audio.addEventListener("timeupdate", function () {
+        if (!isPlaying) {
+            syncTimelineAnchor(true);
+            updateSeekBar();
+            updateTimeDisplay();
+        }
+    });
+
+    audio.addEventListener("seeking", function () {
+        syncTimelineAnchor(true);
+    });
+
+    audio.addEventListener("seeked", function () {
+        syncTimelineAnchor(true);
+        updateSeekBar();
+        updateTimeDisplay();
+    });
+
+    audio.addEventListener("ratechange", function () {
+        syncTimelineAnchor(true);
+    });
+
     audio.addEventListener("pause", function () {
+        syncTimelineAnchor(true);
+
         if (!isPlaying && playerStage.dataset.playerState !== "to-stop") {
             playerStage.dataset.playerState = "stopped";
         }
