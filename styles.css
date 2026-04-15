@@ -444,6 +444,12 @@ body {
             var(--puzzle-blue) 4px,
             var(--puzzle-blue) 8px
         );
+    cursor: zoom-in;
+}
+
+.puzzle-section__frame:focus-visible {
+    outline: 3px solid rgba(23, 185, 215, 0.85);
+    outline-offset: 4px;
 }
 
 .puzzle-section__canvas {
@@ -462,6 +468,71 @@ body {
     height: 100%;
     display: block;
     object-fit: contain;
+}
+
+body.has-puzzle-modal {
+    overflow: hidden;
+}
+
+.puzzle-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    padding: clamp(16px, 4vw, 32px);
+    background: rgba(47, 32, 1, 0.45);
+    backdrop-filter: blur(6px);
+}
+
+.puzzle-modal[hidden] {
+    display: none;
+}
+
+.puzzle-modal__dialog {
+    width: min(94vw, 1080px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.puzzle-modal__tab {
+    min-width: min(62vw, 350px);
+    margin-bottom: -4px;
+    padding:
+        var(--puzzle-tab-padding-top)
+        var(--puzzle-tab-padding-side)
+        var(--puzzle-tab-padding-bottom);
+    border-radius: var(--puzzle-tab-radius) var(--puzzle-tab-radius) 0 0;
+    background: var(--panel-border);
+    color: var(--page-bg);
+    font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: clamp(1.2rem, 2.4vw, 2rem);
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+}
+
+.puzzle-modal__frame {
+    width: 100%;
+    padding: clamp(16px, 3vw, 28px);
+    border: var(--panel-stroke) solid var(--panel-border);
+    border-radius: var(--puzzle-frame-radius);
+    background:
+        repeating-linear-gradient(
+            -45deg,
+            #13aeca 0,
+            #13aeca 4px,
+            var(--puzzle-blue) 4px,
+            var(--puzzle-blue) 8px
+        );
+    box-shadow: 0 20px 40px rgba(47, 32, 1, 0.25);
+}
+
+.puzzle-modal__frame .puzzle-section__canvas {
+    aspect-ratio: auto;
+    min-height: min(72vh, 700px);
+    height: min(72vh, 700px);
 }
 
 .puzzle-section__input {
@@ -520,5 +591,10 @@ body {
         left: 12px;
         width: 48px;
         height: 48px;
+    }
+
+    .puzzle-modal__frame .puzzle-section__canvas {
+        min-height: min(64vh, 480px);
+        height: min(64vh, 480px);
     }
 }

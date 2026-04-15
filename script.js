@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const timeDisplay = document.querySelector(".player-time");
     const domainText = document.querySelector(".player-stage__domain-text");
     const puzzleSections = Array.from(document.querySelectorAll(".puzzle-section"));
+    const puzzleModal = document.querySelector(".puzzle-modal");
+    const puzzleModalDialog = document.querySelector(".puzzle-modal__dialog");
+    const puzzleModalTab = document.querySelector(".puzzle-modal__tab");
+    const puzzleModalFrame = document.querySelector(".puzzle-modal__frame");
 
     if (
         !playerStage ||
@@ -113,6 +117,37 @@ document.addEventListener("DOMContentLoaded", function () {
                 button.textContent = "\u9001\u4fe1";
             }
         });
+    }
+
+    function isPuzzleModalReady() {
+        return Boolean(puzzleModal && puzzleModalDialog && puzzleModalTab && puzzleModalFrame);
+    }
+
+    function openPuzzleModal(section) {
+        const frame = section.querySelector(".puzzle-section__frame");
+        const tab = section.querySelector(".puzzle-section__tab");
+
+        if (!isPuzzleModalReady() || !frame) {
+            return;
+        }
+
+        puzzleModalTab.textContent = tab ? tab.textContent : "";
+        puzzleModalFrame.innerHTML = frame.innerHTML;
+        puzzleModal.hidden = false;
+        puzzleModal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("has-puzzle-modal");
+    }
+
+    function closePuzzleModal() {
+        if (!isPuzzleModalReady() || puzzleModal.hidden) {
+            return;
+        }
+
+        puzzleModal.hidden = true;
+        puzzleModal.setAttribute("aria-hidden", "true");
+        puzzleModalTab.textContent = "";
+        puzzleModalFrame.replaceChildren();
+        document.body.classList.remove("has-puzzle-modal");
     }
 
     function unlockHint1() {
@@ -368,8 +403,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     puzzleSections.forEach(function (section) {
+        const frame = section.querySelector(".puzzle-section__frame");
         const input = section.querySelector(".puzzle-section__input");
         const button = section.querySelector(".puzzle-section__button");
+
+        if (frame) {
+            const tab = section.querySelector(".puzzle-section__tab");
+            const sectionLabel = tab ? tab.textContent : "手がかり";
+
+            frame.tabIndex = 0;
+            frame.setAttribute("role", "button");
+            frame.setAttribute("aria-label", sectionLabel + "を拡大表示");
+
+            frame.addEventListener("click", function () {
+                openPuzzleModal(section);
+            });
+
+            frame.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openPuzzleModal(section);
+                }
+            });
+        }
 
         if (!input || !button) {
             return;
@@ -385,6 +441,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    if (isPuzzleModalReady()) {
+        puzzleModal.addEventListener("click", function (event) {
+            if (!puzzleModalDialog.contains(event.target)) {
+                closePuzzleModal();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closePuzzleModal();
+            }
+        });
+    }
 
     toggleButton.addEventListener("click", function () {
         if (isPlaying) {
