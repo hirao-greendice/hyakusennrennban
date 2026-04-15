@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const LOGO_ROTATION_SECONDS = 189;
     const DISPLAY_DURATION_SECONDS = 24 * 60;
     const TEMP_ANSWERS = {
-        1: "kari1",
-        2: "kari2",
-        3: "kari3",
-        4: "kari4"
+        1: "かり",
+        2: "かり",
+        3: "かり",
+        4: "かり"
     };
 
     let isPlaying = false;

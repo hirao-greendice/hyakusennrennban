@@ -98,8 +98,9 @@ body {
 }
 
 .player-stage__case {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
+    border-radius: 10px;
     object-fit: contain;
     opacity: 1;
     transform: scale(1);
