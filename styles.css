@@ -280,6 +280,7 @@ body {
 
 .player-stage__record,
 .player-stage__hint,
+.player-stage__hint4,
 .player-stage__logo {
     grid-area: 1 / 1;
     width: 100%;
@@ -287,7 +288,8 @@ body {
     object-fit: contain;
 }
 
-.player-stage__hint {
+.player-stage__hint,
+.player-stage__hint4 {
     opacity: 0;
     transition: opacity 220ms ease;
 }
@@ -297,6 +299,10 @@ body {
 }
 
 .player-stage[data-hint1="visible"] .player-stage__hint {
+    opacity: 1;
+}
+
+.player-stage[data-hint4="visible"] .player-stage__hint4 {
     opacity: 1;
 }
 

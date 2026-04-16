@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const soundToggleButton = document.querySelector(".sound-toggle");
     const audio = document.getElementById("bg-music");
     const logo = document.querySelector(".player-stage__logo");
+    const hint4 = document.querySelector(".player-stage__hint4");
     const seekBar = document.querySelector(".player-seek");
     const timeDisplay = document.querySelector(".player-time");
     const domainText = document.querySelector(".player-stage__domain-text");
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         !soundToggleButton ||
         !audio ||
         !logo ||
+        !hint4 ||
         !seekBar ||
         !timeDisplay ||
         !domainText
@@ -162,6 +164,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function unlockTimeDisplay() {
         timeDisplay.classList.add("is-visible");
         updateTimeDisplay();
+    }
+
+    function unlockHint4() {
+        playerStage.dataset.hint4 = "visible";
     }
 
     function hasFiniteDuration() {
@@ -319,8 +325,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateLogoRotation() {
         const rotationDegrees = getCurrentRotationDegrees();
+        const rotationTransform = "rotate(" + rotationDegrees + "deg)";
 
-        logo.style.transform = "rotate(" + rotationDegrees + "deg)";
+        logo.style.transform = rotationTransform;
+        hint4.style.transform = rotationTransform;
         updateDomainPresentation(rotationDegrees);
         updateSeekBar();
         updateTimeDisplay();
@@ -405,6 +413,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (puzzleId === 4) {
+            unlockHint4();
             unlockTimeDisplay();
         }
     }
@@ -554,6 +563,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setStaticLabels();
     window.unlockHint1 = unlockHint1;
     window.unlockHint2DomainText = unlockHint2DomainText;
+    window.unlockHint4 = unlockHint4;
     window.unlockTimeDisplay = unlockTimeDisplay;
     updateDomainPresentation(0);
     updateButton();
