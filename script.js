@@ -157,11 +157,28 @@ document.addEventListener("DOMContentLoaded", function () {
         writeProgressState(progressState);
     }
 
-    function restorePuzzleProgress() {
+    async function isAnswerCorrect(puzzleId, value) {
+        const acceptedHashes = PUZZLE_ACCEPT_HASHES[puzzleId];
+
+        if (!Array.isArray(acceptedHashes) || typeof value !== "string") {
+            return false;
+        }
+
+        try {
+            const answerHash = await createAnswerHash(puzzleId, value);
+            return acceptedHashes.includes(answerHash);
+        } catch (error) {
+            console.error("Answer validation failed during restore.", error);
+            return false;
+        }
+    }
+
+    async function restorePuzzleProgress() {
         const progressState = readProgressState();
         const solvedPuzzleIds = [];
+        const sanitizedProgressState = createEmptyProgressState();
 
-        puzzleSections.forEach(function (section) {
+        for (const section of puzzleSections) {
             const puzzleId = Number(section.dataset.puzzleId);
             const input = section.querySelector(".puzzle-section__input");
             const button = section.querySelector(".puzzle-section__button");
@@ -169,20 +186,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (input && typeof storedAnswer === "string") {
                 input.value = storedAnswer;
+                sanitizedProgressState.answers[puzzleId] = storedAnswer;
             }
 
-            if (!progressState.solved[puzzleId]) {
-                return;
+            if (!(await isAnswerCorrect(puzzleId, storedAnswer))) {
+                continue;
             }
 
             section.dataset.solved = "true";
+            sanitizedProgressState.solved[puzzleId] = true;
 
             if (button) {
                 button.textContent = SOLVED_LABEL;
             }
 
             solvedPuzzleIds.push(puzzleId);
-        });
+        }
+
+        writeProgressState(sanitizedProgressState);
 
         solvedPuzzleIds.sort(function (left, right) {
             return left - right;
@@ -769,7 +790,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("resize", syncContentPanelScale);
 
     setStaticLabels();
-    restorePuzzleProgress();
+    void restorePuzzleProgress();
     window.unlockHint1 = unlockHint1;
     window.unlockHint2MarkerText = unlockHint2MarkerText;
     window.unlockHint3 = unlockHint3;
