@@ -231,6 +231,9 @@ body {
 
 .player-stage__marker-text {
     min-height: 1em;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     font-size: 2.1rem;
@@ -238,6 +241,10 @@ body {
     line-height: 1;
     text-transform: uppercase;
     letter-spacing: 0.08em;
+}
+
+.player-stage[data-hint2="visible"] .player-stage__marker-text {
+    font-size: 2.52rem;
 }
 
 .player-stage__triangle {
