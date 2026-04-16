@@ -156,6 +156,27 @@ body {
     position: relative;
 }
 
+.mission-banner {
+    width: min(90vw, 560px);
+    background: var(--panel-fill);
+    border: var(--panel-stroke) solid var(--panel-border);
+    box-shadow: var(--panel-shadow-offset) var(--panel-shadow-offset) 0 var(--panel-border);
+}
+
+.mission-banner__text {
+    margin: 0;
+    padding:
+        clamp(14px, 2.6vw, 16px)
+        clamp(18px, 3.4vw, 22px)
+        clamp(12px, 2.2vw, 14px);
+    color: var(--panel-border);
+    font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    font-size: clamp(1.05rem, 2vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+}
+
 .content-panel__frame {
     position: absolute;
     top: 0;
@@ -621,6 +642,15 @@ body.has-puzzle-modal {
 @media (max-width: 720px) {
     .page {
         padding-top: calc(env(safe-area-inset-top, 0px) + 88px);
+    }
+
+    .mission-banner {
+        width: min(92vw, 560px);
+    }
+
+    .mission-banner__text {
+        font-size: clamp(1rem, 4.2vw, 1.15rem);
+        line-height: 1.35;
     }
 
     .sound-toggle {
