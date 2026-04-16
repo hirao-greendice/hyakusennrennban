@@ -293,7 +293,7 @@ body {
 }
 
 .player-stage__logo {
-    width: 38%;
+    width: 76%;
 }
 
 .player-stage[data-hint1="visible"] .player-stage__hint {

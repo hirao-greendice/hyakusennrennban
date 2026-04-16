@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
         [354, 356, "ST"]
     ];
     const TEMP_ANSWERS = {
-        1: ["wave", "ウェーブ"],
-        2: ["おと", "音"],
+        1: ["おと", "音"],
+        2: ["wave", "ウェーブ"],
         3: ["kari3"],
         4: ["sing", "シング"]
     };
@@ -397,11 +397,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleCorrectAnswer(puzzleId) {
         if (puzzleId === 1) {
-            unlockHint1();
+            unlockHint2DomainText();
         }
 
         if (puzzleId === 2) {
-            unlockHint2DomainText();
+            unlockHint1();
         }
 
         if (puzzleId === 4) {
