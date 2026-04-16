@@ -40,22 +40,115 @@ document.addEventListener("DOMContentLoaded", function () {
     const DISPLAY_DECIMAL_PLACES = 0;
     const AUDIO_DRIFT_TOLERANCE_SECONDS = 0.12;
     const AUDIO_BACKTRACK_TOLERANCE_SECONDS = 0.03;
-    const EQUATOR_DOMAINS = [
-        [53, 70, "BR"],
-        [70, 75, "CO"],
-        [75, 81, "EC"],
-        [91, 93, "EC"],
-        [230, 231, "ID"],
-        [240, 241, "ID"],
-        [243, 252, "ID"],
-        [246, 263, "ID"],
-        [316, 319, "SO"],
-        [319, 326, "KE"],
-        [326, 330, "UG"],
-        [330, 342, "CD"],
-        [342, 346, "CG"],
-        [346, 351, "GA"],
-        [354, 356, "ST"]
+    const DEFAULT_SEA_COLOR = "#7ec8f0";
+    const DEFAULT_PANEL_BACKGROUND = "#999999";
+    const DEFAULT_DOMAIN_BACKGROUND = "#ffffff";
+    const EQUATOR_COUNTRY_DATA = [
+        {
+            nameJa: "ブラジル",
+            domain: "BR",
+            angleStart: 53,
+            angleEnd: 70,
+            colors: ["#009739", "#FEDF00", "#002776", "#FFFFFF"]
+        },
+        {
+            nameJa: "コロンビア",
+            domain: "CO",
+            angleStart: 70,
+            angleEnd: 75,
+            colors: ["#FCD116", "#003893", "#CE1126"]
+        },
+        {
+            nameJa: "エクアドル",
+            domain: "EC",
+            angleStart: 75,
+            angleEnd: 81,
+            colors: ["#FCD116", "#003893", "#CE1126"]
+        },
+        {
+            nameJa: "エクアドル",
+            domain: "EC",
+            angleStart: 91,
+            angleEnd: 93,
+            colors: ["#FCD116", "#003893", "#CE1126"]
+        },
+        {
+            nameJa: "インドネシア",
+            domain: "ID",
+            angleStart: 230,
+            angleEnd: 231,
+            colors: ["#FF0000", "#FFFFFF"]
+        },
+        {
+            nameJa: "インドネシア",
+            domain: "ID",
+            angleStart: 240,
+            angleEnd: 241,
+            colors: ["#FF0000", "#FFFFFF"]
+        },
+        {
+            nameJa: "インドネシア",
+            domain: "ID",
+            angleStart: 243,
+            angleEnd: 252,
+            colors: ["#FF0000", "#FFFFFF"]
+        },
+        {
+            nameJa: "インドネシア",
+            domain: "ID",
+            angleStart: 246,
+            angleEnd: 263,
+            colors: ["#FF0000", "#FFFFFF"]
+        },
+        {
+            nameJa: "ソマリア",
+            domain: "SO",
+            angleStart: 316,
+            angleEnd: 319,
+            colors: ["#4189DD", "#FFFFFF"]
+        },
+        {
+            nameJa: "ケニア",
+            domain: "KE",
+            angleStart: 319,
+            angleEnd: 326,
+            colors: ["#000000", "#BB0000", "#006600", "#FFFFFF"]
+        },
+        {
+            nameJa: "ウガンダ",
+            domain: "UG",
+            angleStart: 326,
+            angleEnd: 330,
+            colors: ["#000000", "#FFCD00", "#D90000", "#FFFFFF"]
+        },
+        {
+            nameJa: "コンゴ民主共和国",
+            domain: "CD",
+            angleStart: 330,
+            angleEnd: 342,
+            colors: ["#007FFF", "#CE1021", "#F7D618"]
+        },
+        {
+            nameJa: "コンゴ共和国",
+            domain: "CG",
+            angleStart: 342,
+            angleEnd: 346,
+            colors: ["#009543", "#FBDE4A", "#DC241F"]
+        },
+        {
+            nameJa: "ガボン",
+            domain: "GA",
+            angleStart: 346,
+            angleEnd: 351,
+            colors: ["#009E60", "#FCD116", "#3A75C4"]
+        },
+        {
+            nameJa: "サントメ・プリンシペ",
+            domain: "ST",
+            angleStart: 354,
+            angleEnd: 356,
+            colors: ["#12AD2B", "#FFCE00", "#D21034", "#000000"]
+        }
     ];
     const TEMP_ANSWERS = {
         1: ["おと", "音"],
@@ -158,6 +251,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function unlockHint2DomainText() {
         playerStage.dataset.hint2 = "visible";
+        updateDomainPresentation(getCurrentRotationDegrees());
+    }
+
+    function unlockHint3() {
+        playerStage.dataset.hint3 = "visible";
         updateDomainPresentation(getCurrentRotationDegrees());
     }
 
@@ -296,13 +394,52 @@ document.addEventListener("DOMContentLoaded", function () {
         seekBar.value = String(Math.round((getDisplayAudioTime() / audio.duration) * 1000));
     }
 
-    function getEquatorDomain(angle) {
+    function getEquatorCountryData(angle) {
         const normalizedAngle = ((angle % 360) + 360) % 360;
-        const domainEntry = EQUATOR_DOMAINS.find(function (range) {
-            return normalizedAngle >= range[0] && normalizedAngle <= range[1];
+
+        return EQUATOR_COUNTRY_DATA.find(function (country) {
+            return normalizedAngle >= country.angleStart && normalizedAngle <= country.angleEnd;
+        });
+    }
+
+    function buildStripeBackground(colors) {
+        if (!Array.isArray(colors) || colors.length === 0) {
+            return DEFAULT_SEA_COLOR;
+        }
+
+        const stripeWidth = 100 / colors.length;
+        const stops = colors.map(function (color, index) {
+            const start = stripeWidth * index;
+            const end = stripeWidth * (index + 1);
+
+            return color + " " + start + "%, " + color + " " + end + "%";
         });
 
-        return domainEntry ? domainEntry[2] : "";
+        return "linear-gradient(90deg, " + stops.join(", ") + ")";
+    }
+
+    function updateContentPanelBackground(countryData) {
+        if (!contentPanel) {
+            return;
+        }
+
+        if (playerStage.dataset.hint3 !== "visible") {
+            contentPanel.style.setProperty(
+                "--content-panel-frame-background",
+                countryData ? DEFAULT_DOMAIN_BACKGROUND : DEFAULT_PANEL_BACKGROUND
+            );
+            return;
+        }
+
+        if (!countryData) {
+            contentPanel.style.setProperty("--content-panel-frame-background", DEFAULT_SEA_COLOR);
+            return;
+        }
+
+        contentPanel.style.setProperty(
+            "--content-panel-frame-background",
+            buildStripeBackground(countryData.colors)
+        );
     }
 
     function getCurrentRotationDegrees() {
@@ -313,13 +450,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateDomainPresentation(rotationDegrees) {
-        const currentDomain = getEquatorDomain(rotationDegrees);
-        const isDomainRange = currentDomain !== "";
+        const countryData = getEquatorCountryData(rotationDegrees);
+        const currentDomain = countryData ? countryData.domain : "";
 
-        if (contentPanel) {
-            contentPanel.dataset.domainActive = String(isDomainRange);
-        }
-
+        updateContentPanelBackground(countryData);
         domainText.textContent = playerStage.dataset.hint2 === "visible" ? currentDomain : "";
     }
 
@@ -410,6 +544,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (puzzleId === 2) {
             unlockHint1();
+        }
+
+        if (puzzleId === 3) {
+            unlockHint3();
         }
 
         if (puzzleId === 4) {
@@ -563,6 +701,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setStaticLabels();
     window.unlockHint1 = unlockHint1;
     window.unlockHint2DomainText = unlockHint2DomainText;
+    window.unlockHint3 = unlockHint3;
     window.unlockHint4 = unlockHint4;
     window.unlockTimeDisplay = unlockTimeDisplay;
     updateDomainPresentation(0);

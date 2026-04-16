@@ -151,6 +151,7 @@ body {
 
 .content-panel {
     --content-panel-scale: 1;
+    --content-panel-frame-background: #d7dbe0;
     width: var(--main-card-width);
     height: var(--content-panel-design-height);
     position: relative;
@@ -184,17 +185,13 @@ body {
     width: var(--content-panel-design-width);
     height: var(--content-panel-design-height);
     padding: 24px 22px 30px;
-    background: #a9ebfd;
+    background: var(--content-panel-frame-background);
     border: 4px solid var(--panel-border);
     border-radius: 18px;
     box-shadow: 0 12px 30px rgba(75, 50, 0, 0.12);
-    transition: background-color 180ms ease;
+    transition: background 180ms ease;
     transform: scale(var(--content-panel-scale));
     transform-origin: top left;
-}
-
-.content-panel[data-domain-active="true"] .content-panel__frame {
-    background: var(--panel-fill);
 }
 
 .player-stage {
