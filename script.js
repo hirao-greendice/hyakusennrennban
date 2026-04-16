@@ -154,6 +154,11 @@ document.addEventListener("DOMContentLoaded", function () {
         playerStage.dataset.hint1 = "visible";
     }
 
+    function unlockHint2DomainText() {
+        playerStage.dataset.hint2 = "visible";
+        updateDomainPresentation(getCurrentRotationDegrees());
+    }
+
     function unlockTimeDisplay() {
         timeDisplay.classList.add("is-visible");
         updateTimeDisplay();
@@ -294,13 +299,29 @@ document.addEventListener("DOMContentLoaded", function () {
         return domainEntry ? domainEntry[2] : "";
     }
 
-    function updateLogoRotation() {
+    function getCurrentRotationDegrees() {
         const displayAudioTime = getDisplayAudioTime();
         const rotationProgress = (displayAudioTime % LOGO_ROTATION_SECONDS) / LOGO_ROTATION_SECONDS;
-        const rotationDegrees = rotationProgress * 360;
+
+        return rotationProgress * 360;
+    }
+
+    function updateDomainPresentation(rotationDegrees) {
+        const currentDomain = getEquatorDomain(rotationDegrees);
+        const isDomainRange = currentDomain !== "";
+
+        if (contentPanel) {
+            contentPanel.dataset.domainActive = String(isDomainRange);
+        }
+
+        domainText.textContent = playerStage.dataset.hint2 === "visible" ? currentDomain : "";
+    }
+
+    function updateLogoRotation() {
+        const rotationDegrees = getCurrentRotationDegrees();
 
         logo.style.transform = "rotate(" + rotationDegrees + "deg)";
-        domainText.textContent = getEquatorDomain(rotationDegrees);
+        updateDomainPresentation(rotationDegrees);
         updateSeekBar();
         updateTimeDisplay();
 
@@ -377,6 +398,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleCorrectAnswer(puzzleId) {
         if (puzzleId === 1) {
             unlockHint1();
+        }
+
+        if (puzzleId === 2) {
+            unlockHint2DomainText();
         }
 
         if (puzzleId === 4) {
@@ -528,8 +553,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setStaticLabels();
     window.unlockHint1 = unlockHint1;
+    window.unlockHint2DomainText = unlockHint2DomainText;
     window.unlockTimeDisplay = unlockTimeDisplay;
-    domainText.textContent = "";
+    updateDomainPresentation(0);
     updateButton();
     updateSoundToggle();
     updateSeekBar();
