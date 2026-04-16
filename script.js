@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const TEMP_ANSWERS = {
         1: ["おと", "音"],
         2: ["wave", "ウェーブ"],
-        3: ["kari3"],
+        3: ["しきたり"],
         4: ["sing", "シング"]
     };
 
