@@ -345,7 +345,8 @@ body {
     margin: 0;
     appearance: none;
     background: transparent;
-    cursor: pointer;
+    cursor: default;
+    pointer-events: none;
 }
 
 .player-seek::-webkit-slider-runnable-track {
@@ -414,6 +415,13 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
+}
+
+.player-stage[data-player-state="to-play"] .player-actions,
+.player-stage[data-player-state="playing"] .player-actions {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .player-toggle {

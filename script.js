@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const DISPLAY_DECIMAL_PLACES = 0;
     const AUDIO_DRIFT_TOLERANCE_SECONDS = 0.12;
     const AUDIO_BACKTRACK_TOLERANCE_SECONDS = 0.03;
+    const SESSION_PROGRESS_KEY = "clubnumber009-session-progress";
     const DEFAULT_SEA_COLOR = "#7ec8f0";
     const DEFAULT_PANEL_BACKGROUND = "#999999";
     const DEFAULT_MARKER_BACKGROUND = "#ffffff";
@@ -89,6 +90,98 @@ document.addEventListener("DOMContentLoaded", function () {
     let timelineAnchorFrameTime = 0;
 
     audio.volume = 0.3;
+
+    function createEmptyProgressState() {
+        return {
+            answers: {},
+            solved: {}
+        };
+    }
+
+    function readProgressState() {
+        if (!window.sessionStorage) {
+            return createEmptyProgressState();
+        }
+
+        try {
+            const rawValue = window.sessionStorage.getItem(SESSION_PROGRESS_KEY);
+
+            if (!rawValue) {
+                return createEmptyProgressState();
+            }
+
+            const parsed = JSON.parse(rawValue);
+
+            return {
+                answers: parsed && typeof parsed.answers === "object" && parsed.answers ? parsed.answers : {},
+                solved: parsed && typeof parsed.solved === "object" && parsed.solved ? parsed.solved : {}
+            };
+        } catch (error) {
+            console.error("Failed to read progress state.", error);
+            return createEmptyProgressState();
+        }
+    }
+
+    function writeProgressState(progressState) {
+        if (!window.sessionStorage) {
+            return;
+        }
+
+        try {
+            window.sessionStorage.setItem(SESSION_PROGRESS_KEY, JSON.stringify(progressState));
+        } catch (error) {
+            console.error("Failed to write progress state.", error);
+        }
+    }
+
+    function updateStoredAnswer(puzzleId, value) {
+        const progressState = readProgressState();
+
+        progressState.answers[puzzleId] = value;
+        writeProgressState(progressState);
+    }
+
+    function markStoredSolved(puzzleId, value) {
+        const progressState = readProgressState();
+
+        progressState.answers[puzzleId] = value;
+        progressState.solved[puzzleId] = true;
+        writeProgressState(progressState);
+    }
+
+    function restorePuzzleProgress() {
+        const progressState = readProgressState();
+        const solvedPuzzleIds = [];
+
+        puzzleSections.forEach(function (section) {
+            const puzzleId = Number(section.dataset.puzzleId);
+            const input = section.querySelector(".puzzle-section__input");
+            const button = section.querySelector(".puzzle-section__button");
+            const storedAnswer = progressState.answers[puzzleId];
+
+            if (input && typeof storedAnswer === "string") {
+                input.value = storedAnswer;
+            }
+
+            if (!progressState.solved[puzzleId]) {
+                return;
+            }
+
+            section.dataset.solved = "true";
+
+            if (button) {
+                button.textContent = SOLVED_LABEL;
+            }
+
+            solvedPuzzleIds.push(puzzleId);
+        });
+
+        solvedPuzzleIds.sort(function (left, right) {
+            return left - right;
+        }).forEach(function (puzzleId) {
+            handleCorrectAnswer(puzzleId);
+        });
+    }
 
     function syncContentPanelScale() {
         if (!contentPanel) {
@@ -175,12 +268,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function unlockHint2MarkerText() {
         playerStage.dataset.hint2 = "visible";
-        updateMarkerPresentation(getCurrentRotationDegrees());
+        renderPlaybackState(getDisplayAudioTime());
     }
 
     function unlockHint3() {
         playerStage.dataset.hint3 = "visible";
-        updateMarkerPresentation(getCurrentRotationDegrees());
+        renderPlaybackState(getDisplayAudioTime());
     }
 
     function unlockTimeDisplay() {
@@ -273,21 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return 0;
         }
 
-        if (!isPlaying || audio.paused || isSeeking) {
-            return syncTimelineAnchor(true);
-        }
-
-        const now = performance.now();
-        const estimatedAudioTime = clampAudioTime(
-            timelineAnchorAudioTime + ((now - timelineAnchorFrameTime) / 1000) * audio.playbackRate
-        );
-        const actualAudioTime = clampAudioTime(audio.currentTime);
-
-        if (needsTimelineResync(actualAudioTime, estimatedAudioTime)) {
-            return syncTimelineAnchor(true);
-        }
-
-        return estimatedAudioTime;
+        return clampAudioTime(audio.currentTime);
     }
 
     function getMappedDisplaySeconds(audioTime) {
@@ -298,24 +377,25 @@ document.addEventListener("DOMContentLoaded", function () {
         return (audioTime / audio.duration) * DISPLAY_DURATION_SECONDS;
     }
 
-    function updateTimeDisplay() {
+    function updateTimeDisplay(audioTime) {
         if (!timeDisplay.classList.contains("is-visible")) {
             return;
         }
 
-        const displayAudioTime = getDisplayAudioTime();
+        const displayAudioTime = typeof audioTime === "number" ? audioTime : getDisplayAudioTime();
         timeDisplay.textContent =
             formatDisplayTime(getMappedDisplaySeconds(displayAudioTime)) +
             " / " +
             formatDisplayTime(DISPLAY_DURATION_SECONDS);
     }
 
-    function updateSeekBar() {
+    function updateSeekBar(audioTime) {
         if (isSeeking || !hasFiniteDuration()) {
             return;
         }
 
-        seekBar.value = String(Math.round((getDisplayAudioTime() / audio.duration) * 1000));
+        const displayAudioTime = typeof audioTime === "number" ? audioTime : getDisplayAudioTime();
+        seekBar.value = String(Math.round((displayAudioTime / audio.duration) * 1000));
     }
 
     function getTrackSegment(angle) {
@@ -373,8 +453,8 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
-    function getCurrentRotationDegrees() {
-        const displayAudioTime = getDisplayAudioTime();
+    function getCurrentRotationDegrees(audioTime) {
+        const displayAudioTime = typeof audioTime === "number" ? audioTime : getDisplayAudioTime();
         const rotationProgress = (displayAudioTime % LOGO_ROTATION_SECONDS) / LOGO_ROTATION_SECONDS;
 
         return rotationProgress * 360;
@@ -388,15 +468,20 @@ document.addEventListener("DOMContentLoaded", function () {
         markerText.textContent = playerStage.dataset.hint2 === "visible" ? currentMarker : "";
     }
 
-    function updateLogoRotation() {
-        const rotationDegrees = getCurrentRotationDegrees();
+    function renderPlaybackState(audioTime) {
+        const displayAudioTime = typeof audioTime === "number" ? audioTime : getDisplayAudioTime();
+        const rotationDegrees = getCurrentRotationDegrees(displayAudioTime);
         const rotationTransform = "rotate(" + rotationDegrees + "deg)";
 
         logo.style.transform = rotationTransform;
         hint4.style.transform = rotationTransform;
         updateMarkerPresentation(rotationDegrees);
-        updateSeekBar();
-        updateTimeDisplay();
+        updateSeekBar(displayAudioTime);
+        updateTimeDisplay(displayAudioTime);
+    }
+
+    function updateLogoRotation() {
+        renderPlaybackState(getDisplayAudioTime());
 
         if (isPlaying) {
             rotationFrame = window.requestAnimationFrame(updateLogoRotation);
@@ -438,30 +523,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function stopPlayback() {
-        clearTransitionTimer();
-        playerStage.dataset.playerState = "to-stop";
-        isPlaying = false;
-        updateButton();
-        markerText.textContent = "";
-        stopLogoRotation();
-        audio.pause();
-        syncTimelineAnchor(true);
-
-        transitionTimer = window.setTimeout(function () {
-            playerStage.dataset.playerState = "stopped";
-            transitionTimer = 0;
-        }, TRANSITION_MS);
-    }
-
     function applySeek() {
         if (!hasFiniteDuration()) {
             return;
         }
 
-        audio.currentTime = (Number(seekBar.value) / 1000) * audio.duration;
-        syncTimelineAnchor(true);
-        updateLogoRotation();
+        const targetAudioTime = clampAudioTime((Number(seekBar.value) / 1000) * audio.duration);
+
+        audio.currentTime = targetAudioTime;
+        timelineAnchorAudioTime = targetAudioTime;
+        timelineAnchorFrameTime = performance.now();
+        renderPlaybackState(targetAudioTime);
     }
 
     function normalizeAnswer(value) {
@@ -554,6 +626,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         section.dataset.solved = "true";
         button.textContent = SOLVED_LABEL;
+        markStoredSolved(puzzleId, input.value);
         handleCorrectAnswer(puzzleId);
     }
 
@@ -590,6 +663,10 @@ document.addEventListener("DOMContentLoaded", function () {
             void solvePuzzle(section);
         });
 
+        input.addEventListener("input", function () {
+            updateStoredAnswer(Number(section.dataset.puzzleId), input.value);
+        });
+
         input.addEventListener("keydown", function (event) {
             if (event.key !== "Enter") {
                 return;
@@ -619,7 +696,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     toggleButton.addEventListener("click", function () {
         if (isPlaying) {
-            stopPlayback();
             return;
         }
 
@@ -644,15 +720,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     audio.addEventListener("loadedmetadata", function () {
         syncTimelineAnchor(true);
-        updateSeekBar();
-        updateTimeDisplay();
+        renderPlaybackState(getDisplayAudioTime());
     });
 
     audio.addEventListener("timeupdate", function () {
         if (!isPlaying) {
             syncTimelineAnchor(true);
-            updateSeekBar();
-            updateTimeDisplay();
+            renderPlaybackState(getDisplayAudioTime());
         }
     });
 
@@ -662,8 +736,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     audio.addEventListener("seeked", function () {
         syncTimelineAnchor(true);
-        updateSeekBar();
-        updateTimeDisplay();
+        renderPlaybackState(getDisplayAudioTime());
     });
 
     audio.addEventListener("ratechange", function () {
@@ -688,13 +761,13 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("resize", syncContentPanelScale);
 
     setStaticLabels();
+    restorePuzzleProgress();
     window.unlockHint1 = unlockHint1;
     window.unlockHint2MarkerText = unlockHint2MarkerText;
     window.unlockHint3 = unlockHint3;
     window.unlockHint4 = unlockHint4;
     window.unlockTimeDisplay = unlockTimeDisplay;
-    updateMarkerPresentation(0);
+    renderPlaybackState(getDisplayAudioTime());
     updateButton();
     updateSoundToggle();
-    updateSeekBar();
 });
