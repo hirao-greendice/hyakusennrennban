@@ -43,118 +43,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const DEFAULT_SEA_COLOR = "#7ec8f0";
     const DEFAULT_PANEL_BACKGROUND = "#999999";
     const DEFAULT_DOMAIN_BACKGROUND = "#ffffff";
-    const EQUATOR_COUNTRY_DATA = [
-        {
-            nameJa: "ブラジル",
-            domain: "BR",
-            angleStart: 53,
-            angleEnd: 70,
-            colors: ["#009739", "#FEDF00", "#002776", "#FFFFFF"]
-        },
-        {
-            nameJa: "コロンビア",
-            domain: "CO",
-            angleStart: 70,
-            angleEnd: 75,
-            colors: ["#FCD116", "#003893", "#CE1126"]
-        },
-        {
-            nameJa: "エクアドル",
-            domain: "EC",
-            angleStart: 75,
-            angleEnd: 81,
-            colors: ["#FCD116", "#003893", "#CE1126"]
-        },
-        {
-            nameJa: "エクアドル",
-            domain: "EC",
-            angleStart: 91,
-            angleEnd: 93,
-            colors: ["#FCD116", "#003893", "#CE1126"]
-        },
-        {
-            nameJa: "インドネシア",
-            domain: "ID",
-            angleStart: 230,
-            angleEnd: 231,
-            colors: ["#FF0000", "#FFFFFF"]
-        },
-        {
-            nameJa: "インドネシア",
-            domain: "ID",
-            angleStart: 240,
-            angleEnd: 241,
-            colors: ["#FF0000", "#FFFFFF"]
-        },
-        {
-            nameJa: "インドネシア",
-            domain: "ID",
-            angleStart: 243,
-            angleEnd: 252,
-            colors: ["#FF0000", "#FFFFFF"]
-        },
-        {
-            nameJa: "インドネシア",
-            domain: "ID",
-            angleStart: 246,
-            angleEnd: 263,
-            colors: ["#FF0000", "#FFFFFF"]
-        },
-        {
-            nameJa: "ソマリア",
-            domain: "SO",
-            angleStart: 316,
-            angleEnd: 319,
-            colors: ["#4189DD", "#FFFFFF"]
-        },
-        {
-            nameJa: "ケニア",
-            domain: "KE",
-            angleStart: 319,
-            angleEnd: 326,
-            colors: ["#000000", "#BB0000", "#006600", "#FFFFFF"]
-        },
-        {
-            nameJa: "ウガンダ",
-            domain: "UG",
-            angleStart: 326,
-            angleEnd: 330,
-            colors: ["#000000", "#FFCD00", "#D90000", "#FFFFFF"]
-        },
-        {
-            nameJa: "コンゴ民主共和国",
-            domain: "CD",
-            angleStart: 330,
-            angleEnd: 342,
-            colors: ["#007FFF", "#CE1021", "#F7D618"]
-        },
-        {
-            nameJa: "コンゴ共和国",
-            domain: "CG",
-            angleStart: 342,
-            angleEnd: 346,
-            colors: ["#009543", "#FBDE4A", "#DC241F"]
-        },
-        {
-            nameJa: "ガボン",
-            domain: "GA",
-            angleStart: 346,
-            angleEnd: 351,
-            colors: ["#009E60", "#FCD116", "#3A75C4"]
-        },
-        {
-            nameJa: "サントメ・プリンシペ",
-            domain: "ST",
-            angleStart: 354,
-            angleEnd: 356,
-            colors: ["#12AD2B", "#FFCE00", "#D21034", "#000000"]
-        }
+    const LABEL_XOR_KEY = 79;
+    const TEXT_ENCODER = typeof TextEncoder === "function" ? new TextEncoder() : null;
+    const HASH_PEPPER_CODES = [113, 55, 124, 110, 50, 124, 109, 57, 124, 107, 52];
+    const TRACK_SEGMENTS = [
+        [53, 70, 3357, ["#009739", "#FEDF00", "#002776", "#FFFFFF"]],
+        [70, 75, 3072, ["#FCD116", "#003893", "#CE1126"]],
+        [75, 81, 2572, ["#FCD116", "#003893", "#CE1126"]],
+        [91, 93, 2572, ["#FCD116", "#003893", "#CE1126"]],
+        [230, 231, 1547, ["#FF0000", "#FFFFFF"]],
+        [240, 241, 1547, ["#FF0000", "#FFFFFF"]],
+        [243, 252, 1547, ["#FF0000", "#FFFFFF"]],
+        [246, 263, 1547, ["#FF0000", "#FFFFFF"]],
+        [316, 319, 7168, ["#4189DD", "#FFFFFF"]],
+        [319, 326, 1034, ["#000000", "#BB0000", "#006600", "#FFFFFF"]],
+        [326, 330, 6664, ["#000000", "#FFCD00", "#D90000", "#FFFFFF"]],
+        [330, 342, 3083, ["#007FFF", "#CE1021", "#F7D618"]],
+        [342, 346, 3080, ["#009543", "#FBDE4A", "#DC241F"]],
+        [346, 351, 2062, ["#009E60", "#FCD116", "#3A75C4"]],
+        [354, 356, 7195, ["#12AD2B", "#FFCE00", "#D21034", "#000000"]]
     ];
-    const TEMP_ANSWERS = {
-        1: ["おと", "音"],
-        2: ["wave", "ウェーブ"],
-        3: ["しきたり"],
-        4: ["sing", "シング"]
+    const PUZZLE_ACCEPT_HASHES = {
+        1: [
+            "acc67db4b89c51cebefdf1ae135133acf61d409b1aaad23a8f27e3bdd3edb834",
+            "6df103c8dd4ae47aae61a4c122881c8c6060b129a64f49504dfa4e48cba846c5"
+        ],
+        2: [
+            "4d8078b977ed2c019b6a8eb6681459583180ef338671003f4006cd0367467c92",
+            "fb3912b3bdba1b2f4465d49af80021eac6f71ee4d86ca28854fb21c67b165fb4"
+        ],
+        3: [
+            "7fdbba001a6cdd28e576cb0f0070ffd69033d41f8766fe22275068c6991f871b"
+        ],
+        4: [
+            "c99047cc8030970f48910aaaffb6417da828c8067e920663e403299f1d6dd044",
+            "99d303ff8c9c17dc01f3c1b574968e09a57f664de83047140329c224c753974a"
+        ]
     };
 
     let isPlaying = false;
@@ -394,12 +318,19 @@ document.addEventListener("DOMContentLoaded", function () {
         seekBar.value = String(Math.round((getDisplayAudioTime() / audio.duration) * 1000));
     }
 
-    function getEquatorCountryData(angle) {
+    function getTrackSegment(angle) {
         const normalizedAngle = ((angle % 360) + 360) % 360;
 
-        return EQUATOR_COUNTRY_DATA.find(function (country) {
-            return normalizedAngle >= country.angleStart && normalizedAngle <= country.angleEnd;
+        return TRACK_SEGMENTS.find(function (segment) {
+            return normalizedAngle >= segment[0] && normalizedAngle <= segment[1];
         });
+    }
+
+    function decodeSegmentLabel(value) {
+        return String.fromCharCode(
+            ((value >> 8) & 255) ^ LABEL_XOR_KEY,
+            (value & 255) ^ LABEL_XOR_KEY
+        );
     }
 
     function buildStripeBackground(colors) {
@@ -418,7 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return "linear-gradient(90deg, " + stops.join(", ") + ")";
     }
 
-    function updateContentPanelBackground(countryData) {
+    function updateContentPanelBackground(segment) {
         if (!contentPanel) {
             return;
         }
@@ -426,19 +357,19 @@ document.addEventListener("DOMContentLoaded", function () {
         if (playerStage.dataset.hint3 !== "visible") {
             contentPanel.style.setProperty(
                 "--content-panel-frame-background",
-                countryData ? DEFAULT_DOMAIN_BACKGROUND : DEFAULT_PANEL_BACKGROUND
+                segment ? DEFAULT_DOMAIN_BACKGROUND : DEFAULT_PANEL_BACKGROUND
             );
             return;
         }
 
-        if (!countryData) {
+        if (!segment) {
             contentPanel.style.setProperty("--content-panel-frame-background", DEFAULT_SEA_COLOR);
             return;
         }
 
         contentPanel.style.setProperty(
             "--content-panel-frame-background",
-            buildStripeBackground(countryData.colors)
+            buildStripeBackground(segment[3])
         );
     }
 
@@ -450,10 +381,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateDomainPresentation(rotationDegrees) {
-        const countryData = getEquatorCountryData(rotationDegrees);
-        const currentDomain = countryData ? countryData.domain : "";
+        const segment = getTrackSegment(rotationDegrees);
+        const currentDomain = segment ? decodeSegmentLabel(segment[2]) : "";
 
-        updateContentPanelBackground(countryData);
+        updateContentPanelBackground(segment);
         domainText.textContent = playerStage.dataset.hint2 === "visible" ? currentDomain : "";
     }
 
@@ -537,6 +468,43 @@ document.addEventListener("DOMContentLoaded", function () {
         return value.normalize("NFKC").trim().toLowerCase();
     }
 
+    function getHashPepper() {
+        return String.fromCharCode.apply(String, HASH_PEPPER_CODES);
+    }
+
+    function bytesToHex(bytes) {
+        return Array.from(bytes, function (value) {
+            return value.toString(16).padStart(2, "0");
+        }).join("");
+    }
+
+    function serializeNormalizedAnswer(value) {
+        return Array.from(value, function (character) {
+            return character.codePointAt(0).toString(36);
+        }).join(".");
+    }
+
+    async function createAnswerHash(puzzleId, value) {
+        const normalizedValue = normalizeAnswer(value);
+        const payload =
+            String(puzzleId) +
+            "|" +
+            serializeNormalizedAnswer(normalizedValue) +
+            "|" +
+            getHashPepper();
+
+        if (!window.crypto || !window.crypto.subtle || !TEXT_ENCODER) {
+            throw new Error("Web Crypto API is not available.");
+        }
+
+        const digest = await window.crypto.subtle.digest(
+            "SHA-256",
+            TEXT_ENCODER.encode(payload)
+        );
+
+        return bytesToHex(new Uint8Array(digest));
+    }
+
     function handleCorrectAnswer(puzzleId) {
         if (puzzleId === 1) {
             unlockHint2DomainText();
@@ -556,16 +524,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function solvePuzzle(section) {
+    async function solvePuzzle(section) {
         const puzzleId = Number(section.dataset.puzzleId);
         const input = section.querySelector(".puzzle-section__input");
         const button = section.querySelector(".puzzle-section__button");
+        const acceptedHashes = PUZZLE_ACCEPT_HASHES[puzzleId];
 
-        if (!input || !button || section.dataset.solved === "true") {
+        if (
+            !input ||
+            !button ||
+            section.dataset.solved === "true" ||
+            !Array.isArray(acceptedHashes)
+        ) {
             return;
         }
 
-        if (!TEMP_ANSWERS[puzzleId].includes(normalizeAnswer(input.value))) {
+        let answerHash = "";
+
+        try {
+            answerHash = await createAnswerHash(puzzleId, input.value);
+        } catch (error) {
+            console.error("Answer hashing failed.", error);
+            return;
+        }
+
+        if (!acceptedHashes.includes(answerHash)) {
             return;
         }
 
@@ -604,13 +587,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         button.addEventListener("click", function () {
-            solvePuzzle(section);
+            void solvePuzzle(section);
         });
 
         input.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                solvePuzzle(section);
+            if (event.key !== "Enter") {
+                return;
             }
+
+            if (event.isComposing || event.keyCode === 229) {
+                return;
+            }
+
+            void solvePuzzle(section);
         });
     });
 
