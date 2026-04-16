@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const hint4 = document.querySelector(".player-stage__hint4");
     const seekBar = document.querySelector(".player-seek");
     const timeDisplay = document.querySelector(".player-time");
-    const domainText = document.querySelector(".player-stage__domain-text");
+    const markerText = document.querySelector(".player-stage__marker-text");
     const puzzleSections = Array.from(document.querySelectorAll(".puzzle-section"));
     const puzzleModal = document.querySelector(".puzzle-modal");
     const puzzleModalDialog = document.querySelector(".puzzle-modal__dialog");
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         !hint4 ||
         !seekBar ||
         !timeDisplay ||
-        !domainText
+        !markerText
     ) {
         return;
     }
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const AUDIO_BACKTRACK_TOLERANCE_SECONDS = 0.03;
     const DEFAULT_SEA_COLOR = "#7ec8f0";
     const DEFAULT_PANEL_BACKGROUND = "#999999";
-    const DEFAULT_DOMAIN_BACKGROUND = "#ffffff";
+    const DEFAULT_MARKER_BACKGROUND = "#ffffff";
     const LABEL_XOR_KEY = 79;
     const TEXT_ENCODER = typeof TextEncoder === "function" ? new TextEncoder() : null;
     const HASH_PEPPER_CODES = [113, 55, 124, 110, 50, 124, 109, 57, 124, 107, 52];
@@ -173,14 +173,14 @@ document.addEventListener("DOMContentLoaded", function () {
         playerStage.dataset.hint1 = "visible";
     }
 
-    function unlockHint2DomainText() {
+    function unlockHint2MarkerText() {
         playerStage.dataset.hint2 = "visible";
-        updateDomainPresentation(getCurrentRotationDegrees());
+        updateMarkerPresentation(getCurrentRotationDegrees());
     }
 
     function unlockHint3() {
         playerStage.dataset.hint3 = "visible";
-        updateDomainPresentation(getCurrentRotationDegrees());
+        updateMarkerPresentation(getCurrentRotationDegrees());
     }
 
     function unlockTimeDisplay() {
@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (playerStage.dataset.hint3 !== "visible") {
             contentPanel.style.setProperty(
                 "--content-panel-frame-background",
-                segment ? DEFAULT_DOMAIN_BACKGROUND : DEFAULT_PANEL_BACKGROUND
+                segment ? DEFAULT_MARKER_BACKGROUND : DEFAULT_PANEL_BACKGROUND
             );
             return;
         }
@@ -380,12 +380,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return rotationProgress * 360;
     }
 
-    function updateDomainPresentation(rotationDegrees) {
+    function updateMarkerPresentation(rotationDegrees) {
         const segment = getTrackSegment(rotationDegrees);
-        const currentDomain = segment ? decodeSegmentLabel(segment[2]) : "";
+        const currentMarker = segment ? decodeSegmentLabel(segment[2]) : "";
 
         updateContentPanelBackground(segment);
-        domainText.textContent = playerStage.dataset.hint2 === "visible" ? currentDomain : "";
+        markerText.textContent = playerStage.dataset.hint2 === "visible" ? currentMarker : "";
     }
 
     function updateLogoRotation() {
@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         logo.style.transform = rotationTransform;
         hint4.style.transform = rotationTransform;
-        updateDomainPresentation(rotationDegrees);
+        updateMarkerPresentation(rotationDegrees);
         updateSeekBar();
         updateTimeDisplay();
 
@@ -443,7 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
         playerStage.dataset.playerState = "to-stop";
         isPlaying = false;
         updateButton();
-        domainText.textContent = "";
+        markerText.textContent = "";
         stopLogoRotation();
         audio.pause();
         syncTimelineAnchor(true);
@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleCorrectAnswer(puzzleId) {
         if (puzzleId === 1) {
-            unlockHint2DomainText();
+            unlockHint2MarkerText();
         }
 
         if (puzzleId === 2) {
@@ -689,11 +689,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setStaticLabels();
     window.unlockHint1 = unlockHint1;
-    window.unlockHint2DomainText = unlockHint2DomainText;
+    window.unlockHint2MarkerText = unlockHint2MarkerText;
     window.unlockHint3 = unlockHint3;
     window.unlockHint4 = unlockHint4;
     window.unlockTimeDisplay = unlockTimeDisplay;
-    updateDomainPresentation(0);
+    updateMarkerPresentation(0);
     updateButton();
     updateSoundToggle();
     updateSeekBar();

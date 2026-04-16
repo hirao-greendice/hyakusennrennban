@@ -213,7 +213,7 @@ body {
     place-items: center;
 }
 
-.player-stage__domain-marker {
+.player-stage__marker-flag {
     position: absolute;
     top: calc(50% - (var(--record-stack-size) / 2));
     left: 50%;
@@ -229,7 +229,7 @@ body {
     pointer-events: none;
 }
 
-.player-stage__domain-text {
+.player-stage__marker-text {
     min-height: 1em;
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -327,7 +327,7 @@ body {
     transform: translate(-50%, -50%) scale(1);
 }
 
-.player-stage[data-player-state="playing"] .player-stage__domain-marker {
+.player-stage[data-player-state="playing"] .player-stage__marker-flag {
     opacity: 1;
     transform: translate(-50%, -100%) scale(1);
 }
