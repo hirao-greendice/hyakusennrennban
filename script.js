@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
     const TEMP_ANSWERS = {
         1: ["wave", "ウェーブ"],
-        2: ["kari2"],
+        2: ["おと", "音"],
         3: ["kari3"],
         4: ["sing", "シング"]
     };
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let timelineAnchorAudioTime = 0;
     let timelineAnchorFrameTime = 0;
 
-    audio.volume = 0.5;
+    audio.volume = 0.3;
 
     function syncContentPanelScale() {
         if (!contentPanel) {
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function normalizeAnswer(value) {
-        return value.trim().toLowerCase();
+        return value.normalize("NFKC").trim().toLowerCase();
     }
 
     function handleCorrectAnswer(puzzleId) {
