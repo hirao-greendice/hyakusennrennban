@@ -292,8 +292,17 @@ body {
     object-fit: contain;
 }
 
+.player-stage__record {
+    z-index: 1;
+}
+
+.player-stage__logo {
+    z-index: 2;
+}
+
 .player-stage__hint,
 .player-stage__hint4 {
+    z-index: 3;
     opacity: 0;
     transition: opacity 220ms ease;
 }
