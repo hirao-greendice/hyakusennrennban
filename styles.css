@@ -130,6 +130,10 @@ body {
 
 .title-banner {
     width: var(--title-width);
+    padding:
+        clamp(14px, 2.6vw, 16px)
+        clamp(18px, 3.4vw, 22px)
+        clamp(12px, 2.2vw, 14px);
     background: var(--panel-fill);
     border: var(--panel-stroke) solid var(--panel-border);
     box-shadow: var(--panel-shadow-offset) var(--panel-shadow-offset) 0 var(--panel-border);
@@ -137,16 +141,17 @@ body {
 
 .title-banner__text {
     margin: 0;
-    padding:
-        clamp(14px, 2.6vw, 16px)
-        clamp(18px, 3.4vw, 22px)
-        clamp(12px, 2.2vw, 14px);
+    padding: 0;
     color: var(--panel-border);
     font-family: "YakuHanJP_Noto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     font-size: clamp(1rem, 1.5vw, 1.45rem);
     font-weight: 700;
     line-height: 1.2;
     text-align: center;
+}
+
+.title-banner__text + .title-banner__text {
+    margin-top: clamp(8px, 1.8vw, 12px);
 }
 
 .content-panel {
